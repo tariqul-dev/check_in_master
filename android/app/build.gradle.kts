@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.tariqul.check_in_master"
     compileSdk = 36
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13846066"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
