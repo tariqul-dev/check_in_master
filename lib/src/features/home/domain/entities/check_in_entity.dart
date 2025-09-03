@@ -1,0 +1,19 @@
+import 'package:check_in_master/src/core/entities/location_data.dart';
+import 'package:equatable/equatable.dart';
+
+class CheckInEntity extends Equatable {
+  final int inTime;
+  final String? name;
+  final String? email;
+  final LocationData locationData;
+
+  const CheckInEntity({
+    required this.inTime,
+    required this.locationData,
+    this.name,
+    this.email,
+  });
+
+  @override
+  List<Object?> get props => [inTime, locationData, email, name];
+}
