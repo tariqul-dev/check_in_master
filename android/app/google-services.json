@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "362558307860",
+    "firebase_url": "https://tasks-d1abf-default-rtdb.firebaseio.com",
+    "project_id": "tasks-d1abf",
+    "storage_bucket": "tasks-d1abf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362558307860:android:908575f6dadf008f1e7101",
+        "android_client_info": {
+          "package_name": "com.tariqul.check_in_master"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZYo9z-pQHqZqHamnv4ixaCslkBkUnDE0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
