@@ -1,5 +1,8 @@
+import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
+import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart';
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart';
 import 'package:check_in_master/src/features/store_location/ui/pages/set_location_page.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +26,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeCubit _homeCubit;
+  late final CheckInOutCubit _checkInOutCubit;
+  late final LoadingHudCubit _loadingCubit;
 
   @override
   void initState() {
     super.initState();
 
     _homeCubit = getIt<HomeCubit>();
+    _checkInOutCubit = getIt<CheckInOutCubit>();
+    _loadingCubit = LoadingHudCubit();
   }
+
+  bool isCheckedIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +98,54 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCheckInButton() {
-    return OutlinedButton(onPressed: () {}, child: Text('Check-In'));
+    return BlocConsumer<CheckInOutCubit, CheckInOutState>(
+      bloc: _checkInOutCubit,
+      listener: _checkInOutStateListener,
+      builder: (context, state) {
+        return OutlinedButton(
+          onPressed: () {
+            if (isCheckedIn) {
+              _checkInOutCubit.checkOut();
+              return;
+            }
+            _checkInOutCubit.checkIn();
+          },
+          child: state.maybeMap(
+            checkedIn: (s) => Text('Check-Out'),
+            checkedOut: (s) => Text('Check-In'),
+            orElse: () => Text('Tap to check in'),
+          ),
+        );
+      },
+    );
+  }
+
+  void _checkInOutStateListener(BuildContext context, CheckInOutState state) {
+    state.map(
+      initial: (_) {},
+      loading: (_) {
+        _loadingCubit.startLoading();
+        DialogUtils.showLoadingDialog(context: context);
+      },
+      failure: (s) {
+        _loadingCubit.completeLoading();
+        DialogUtils.hideDialog(context);
+        DialogUtils.showMessageDialog(
+          context: context,
+          title: "Error",
+          message: s.message,
+        );
+      },
+      checkedIn: (s) {
+        _loadingCubit.completeLoading();
+        DialogUtils.hideDialog(context);
+        isCheckedIn = true;
+      },
+      checkedOut: (_) {
+        _loadingCubit.completeLoading();
+        DialogUtils.hideDialog(context);
+        isCheckedIn = false;
+      },
+    );
   }
 }

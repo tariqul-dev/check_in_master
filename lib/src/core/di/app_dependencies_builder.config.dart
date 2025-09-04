@@ -15,18 +15,24 @@ import 'package:check_in_master/src/core/di/app_dependencies_builder.dart'
     as _i205;
 import 'package:check_in_master/src/core/usecases/get_location_data.dart'
     as _i602;
+import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart'
+    as _i483;
 import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart'
     as _i599;
 import 'package:check_in_master/src/features/home/data/repositories/home_repository_impl.dart'
     as _i980;
 import 'package:check_in_master/src/features/home/domain/repositories/home_repository.dart'
     as _i677;
+import 'package:check_in_master/src/features/home/domain/usecases/check_eligibility.dart'
+    as _i284;
 import 'package:check_in_master/src/features/home/domain/usecases/do_check_in.dart'
     as _i261;
 import 'package:check_in_master/src/features/home/domain/usecases/do_check_out.dart'
     as _i939;
 import 'package:check_in_master/src/features/home/domain/usecases/get_permission_status.dart'
     as _i468;
+import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart'
+    as _i1016;
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart'
     as _i1062;
 import 'package:check_in_master/src/features/store_location/data/datasources/remote/remote_datasource.dart'
@@ -63,6 +69,9 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i930.RemoteDataSource>(),
       ),
     );
+    gh.factory<_i483.EligibilityChecker>(
+      () => _i483.EligibilityChecker(location: gh<_i645.Location>()),
+    );
     gh.factory<_i599.HandlePermission>(
       () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
@@ -85,6 +94,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i677.HomeRepository>(
       () => _i980.HomeRepositoryImpl(
         handlePermission: gh<_i599.HandlePermission>(),
+        eligibilityChecker: gh<_i483.EligibilityChecker>(),
       ),
     );
     gh.factory<_i261.DoCheckIn>(
@@ -95,6 +105,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i939.DoCheckOut>(
       () => _i939.DoCheckOut(repository: gh<_i677.HomeRepository>()),
+    );
+    gh.factory<_i284.CheckEligibility>(
+      () => _i284.CheckEligibility(repository: gh<_i677.HomeRepository>()),
+    );
+    gh.factory<_i1016.CheckInOutCubit>(
+      () => _i1016.CheckInOutCubit(
+        gh<_i602.GetLocationData>(),
+        gh<_i284.CheckEligibility>(),
+      ),
     );
     gh.factory<_i1062.HomeCubit>(
       () => _i1062.HomeCubit(
