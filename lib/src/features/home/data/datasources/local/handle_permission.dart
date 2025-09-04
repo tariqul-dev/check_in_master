@@ -1,4 +1,3 @@
-import 'package:check_in_master/src/core/errors/exceptions/location_exception.dart';
 import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
 import 'package:injectable/injectable.dart';
 import 'package:location/location.dart';
@@ -10,18 +9,6 @@ class HandlePermission {
   HandlePermission({required this.location});
 
   Future<Status> checkPermission() async {
-    final bool isLocationServiceEnabled = await location.serviceEnabled();
-
-    if (!isLocationServiceEnabled) {
-      final bool isServiceStillDisabled = await location.requestService();
-      if (isServiceStillDisabled) {
-        throw LocationException(
-          message:
-              'Service is disabled. Please enable location service from your settings',
-        );
-      }
-    }
-
     PermissionStatus permissionStatus = await location.hasPermission();
     if (permissionStatus == PermissionStatus.granted) {
       return getPermissionStatus(permissionStatus);
@@ -31,7 +18,8 @@ class HandlePermission {
   }
 
   Future<Status> askLocationPermission() async {
-    final requestPermissionStatus = await location.requestPermission();
+    final PermissionStatus requestPermissionStatus = await location
+        .requestPermission();
 
     return getPermissionStatus(requestPermissionStatus);
   }
