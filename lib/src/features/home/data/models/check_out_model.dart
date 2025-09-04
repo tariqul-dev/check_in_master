@@ -17,7 +17,7 @@ class CheckOutModel {
 
   CheckOutEntity toEntity() => CheckOutEntity(
     inTime: inTime,
-    locationData: locationData,
+    locationData: locationData.toEntity(),
   );
 
   factory CheckOutModel.fromEntity(CheckOutEntity entity) => CheckOutModel(

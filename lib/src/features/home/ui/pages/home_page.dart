@@ -1,10 +1,20 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart';
+import 'package:check_in_master/src/features/store_location/ui/pages/set_location_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
+  static const path = '/home';
+
+  static Route<dynamic> route() {
+    return MaterialPageRoute(
+      builder: (_) => HomePage(),
+      settings: RouteSettings(name: HomePage.path),
+    );
+  }
+
   const HomePage({super.key});
 
   @override
@@ -43,6 +53,13 @@ class _HomePageState extends State<HomePage> {
                 _homeCubit.checkPermission();
               },
               child: Text('Check Permission'),
+            ),
+            SizedBox(height: 20),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(SetLocationPage.route());
+              },
+              child: Text('Set office location'),
             ),
           ],
         ),

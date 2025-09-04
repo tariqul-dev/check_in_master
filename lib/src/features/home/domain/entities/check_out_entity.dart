@@ -1,9 +1,9 @@
-import 'package:check_in_master/src/core/entities/location_data.dart';
+import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:equatable/equatable.dart';
 
 class CheckOutEntity extends Equatable {
   final int inTime;
-  final LocationData locationData;
+  final LocationDataEntity locationData;
 
   const CheckOutEntity({required this.inTime, required this.locationData});
 

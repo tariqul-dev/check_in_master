@@ -20,7 +20,7 @@ class CheckInModel {
 
   CheckInEntity toEntity() => CheckInEntity(
     inTime: inTime,
-    locationData: locationData,
+    locationData: locationData.toEntity(),
     name: name,
     email: email,
   );
