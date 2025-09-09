@@ -131,10 +131,10 @@ return saveLocationSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( LatLng locationData)?  initial,TResult Function()?  inProgress,TResult Function( String message)?  failure,TResult Function( LatLng locationData)?  fetchLocationData,TResult Function()?  saveLocationSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function( String message)?  failure,TResult Function( LocationDataEntity locationData)?  fetchLocationData,TResult Function()?  saveLocationSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.locationData);case _InProgress() when inProgress != null:
+return initial();case _InProgress() when inProgress != null:
 return inProgress();case _Failure() when failure != null:
 return failure(_that.message);case _FetchLocationData() when fetchLocationData != null:
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess() when saveLocationSuccess != null:
@@ -156,10 +156,10 @@ return saveLocationSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( LatLng locationData)  initial,required TResult Function()  inProgress,required TResult Function( String message)  failure,required TResult Function( LatLng locationData)  fetchLocationData,required TResult Function()  saveLocationSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function( String message)  failure,required TResult Function( LocationDataEntity locationData)  fetchLocationData,required TResult Function()  saveLocationSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that.locationData);case _InProgress():
+return initial();case _InProgress():
 return inProgress();case _Failure():
 return failure(_that.message);case _FetchLocationData():
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess():
@@ -180,10 +180,10 @@ return saveLocationSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( LatLng locationData)?  initial,TResult? Function()?  inProgress,TResult? Function( String message)?  failure,TResult? Function( LatLng locationData)?  fetchLocationData,TResult? Function()?  saveLocationSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function( String message)?  failure,TResult? Function( LocationDataEntity locationData)?  fetchLocationData,TResult? Function()?  saveLocationSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.locationData);case _InProgress() when inProgress != null:
+return initial();case _InProgress() when inProgress != null:
 return inProgress();case _Failure() when failure != null:
 return failure(_that.message);case _FetchLocationData() when fetchLocationData != null:
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess() when saveLocationSuccess != null:
@@ -199,67 +199,33 @@ return saveLocationSuccess();case _:
 
 
 class _Initial implements SetLocationState {
-  const _Initial({required this.locationData});
+  const _Initial();
   
 
- final  LatLng locationData;
 
-/// Create a copy of SetLocationState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.locationData, locationData) || other.locationData == locationData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,locationData);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SetLocationState.initial(locationData: $locationData)';
+  return 'SetLocationState.initial()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class _$InitialCopyWith<$Res> implements $SetLocationStateCopyWith<$Res> {
-  factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
-@useResult
-$Res call({
- LatLng locationData
-});
 
 
-
-
-}
-/// @nodoc
-class __$InitialCopyWithImpl<$Res>
-    implements _$InitialCopyWith<$Res> {
-  __$InitialCopyWithImpl(this._self, this._then);
-
-  final _Initial _self;
-  final $Res Function(_Initial) _then;
-
-/// Create a copy of SetLocationState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? locationData = null,}) {
-  return _then(_Initial(
-locationData: null == locationData ? _self.locationData : locationData // ignore: cast_nullable_to_non_nullable
-as LatLng,
-  ));
-}
-
-
-}
 
 /// @nodoc
 
@@ -366,7 +332,7 @@ class _FetchLocationData implements SetLocationState {
   const _FetchLocationData({required this.locationData});
   
 
- final  LatLng locationData;
+ final  LocationDataEntity locationData;
 
 /// Create a copy of SetLocationState
 /// with the given fields replaced by the non-null parameter values.
@@ -398,7 +364,7 @@ abstract mixin class _$FetchLocationDataCopyWith<$Res> implements $SetLocationSt
   factory _$FetchLocationDataCopyWith(_FetchLocationData value, $Res Function(_FetchLocationData) _then) = __$FetchLocationDataCopyWithImpl;
 @useResult
 $Res call({
- LatLng locationData
+ LocationDataEntity locationData
 });
 
 
@@ -418,7 +384,7 @@ class __$FetchLocationDataCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? locationData = null,}) {
   return _then(_FetchLocationData(
 locationData: null == locationData ? _self.locationData : locationData // ignore: cast_nullable_to_non_nullable
-as LatLng,
+as LocationDataEntity,
   ));
 }
 

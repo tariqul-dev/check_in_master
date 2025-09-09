@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
+import 'package:check_in_master/src/core/errors/failures/no_data_found_failure.dart';
 import 'package:check_in_master/src/core/params/no_params.dart';
 import 'package:check_in_master/src/core/usecases/get_location_data.dart';
 import 'package:check_in_master/src/features/store_location/domain/usecases/save_location_data.dart';
@@ -18,13 +19,15 @@ class SetLocationCubit extends Cubit<SetLocationState> {
   final GetLocationData _getLocationData;
 
   SetLocationCubit(this._saveLocationData, this._getLocationData)
-    : super(const SetLocationState.initial(locationData: defaultLocationData));
+    : super(const SetLocationState.initial());
 
   Future<void> saveLocationData(LatLng locationData) async {
     emit(SetLocationState.inProgress());
     final locationDataEntity = LocationDataEntity(
       lat: locationData.latitude,
       lng: locationData.longitude,
+      active: true,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
     );
     final result = await _saveLocationData(locationDataEntity);
 
@@ -38,9 +41,13 @@ class SetLocationCubit extends Cubit<SetLocationState> {
     emit(SetLocationState.inProgress());
     final result = await _getLocationData(NoParams());
 
-    await result.fold((l) async {
-      final LatLng latLng = LatLng(l.lat, l.lng);
-      emit(SetLocationState.fetchLocationData(locationData: latLng));
-    }, (r) async => emit(SetLocationState.failure(message: r.message)));
+    await result.fold(
+      (l) async {
+        emit(SetLocationState.fetchLocationData(locationData: l));
+      },
+      (r) async {
+        emit(SetLocationState.failure(message: r.message));
+      },
+    );
   }
 }

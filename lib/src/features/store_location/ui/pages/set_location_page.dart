@@ -6,6 +6,7 @@ import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SetLocationPage extends StatefulWidget {
@@ -27,9 +28,11 @@ class SetLocationPage extends StatefulWidget {
 class _SetLocationPageState extends State<SetLocationPage> {
   late final SetLocationCubit _setLocationCubit;
   late final LoadingHudCubit _loadingCubit;
-  final ValueNotifier<LatLng> tappedLocation = ValueNotifier(
+  final ValueNotifier<LatLng> currentLocation = ValueNotifier(
     defaultLocationData,
   );
+
+  GoogleMapController? _mapController;
 
   late final StreamSubscription<SetLocationState> _setLocationSubscription;
 
@@ -49,6 +52,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
   void dispose() {
     _loadingCubit.close();
     _setLocationCubit.close();
+    _mapController?.dispose();
     _setLocationSubscription.cancel();
     super.dispose();
   }
@@ -63,7 +67,12 @@ class _SetLocationPageState extends State<SetLocationPage> {
   }
 
   Widget _buildBody() {
-    return SafeArea(child: _buildMap());
+    return SafeArea(
+      child: BlocBuilder(
+        bloc: _setLocationCubit,
+        builder: (context, state) => _buildMap(),
+      ),
+    );
   }
 
   Widget _buildSaveLocationButton() {
@@ -74,7 +83,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
 
       child: FilledButton(
         onPressed: () {
-          _setLocationCubit.saveLocationData(tappedLocation.value);
+          _setLocationCubit.saveLocationData(currentLocation.value);
         },
         child: Text('Save location'),
       ),
@@ -83,15 +92,19 @@ class _SetLocationPageState extends State<SetLocationPage> {
 
   ValueListenableBuilder<LatLng> _buildMap() {
     return ValueListenableBuilder<LatLng>(
-      valueListenable: tappedLocation,
+      valueListenable: currentLocation,
       builder: (context, value, child) {
         return GoogleMap(
           initialCameraPosition: CameraPosition(
-            target: tappedLocation.value,
+            target: currentLocation.value,
             zoom: 14.0,
           ),
+          onMapCreated: (controller) {
+            _mapController = controller;
+          },
           onTap: (LatLng tappedPoint) {
-            tappedLocation.value = tappedPoint;
+            currentLocation.value = tappedPoint;
+            _setMapCameraPosition(tappedPoint);
 
             print(
               'Tapped Location: ${tappedPoint.latitude}, ${tappedPoint.longitude}',
@@ -100,7 +113,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
           markers: {
             Marker(
               markerId: MarkerId('selected-location'),
-              position: tappedLocation.value,
+              position: currentLocation.value,
             ),
           },
         );
@@ -127,6 +140,9 @@ class _SetLocationPageState extends State<SetLocationPage> {
       fetchLocationData: (s) {
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
+        final latLng = LatLng(s.locationData.lat, s.locationData.lng);
+        currentLocation.value = latLng;
+        _setMapCameraPosition(latLng);
       },
       saveLocationSuccess: (_) {
         _loadingCubit.completeLoading();
@@ -138,5 +154,9 @@ class _SetLocationPageState extends State<SetLocationPage> {
         );
       },
     );
+  }
+
+  void _setMapCameraPosition(LatLng latLng) {
+    _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
   }
 }

@@ -10,22 +10,14 @@ class CheckOutModel {
   final int inTime;
   final LocationDataModel locationData;
 
-  const CheckOutModel({
-    required this.inTime,
-    required this.locationData,
-  });
+  const CheckOutModel({required this.inTime, required this.locationData});
 
-  CheckOutEntity toEntity() => CheckOutEntity(
-    inTime: inTime,
-    locationData: locationData.toEntity(),
-  );
+  CheckOutEntity toEntity() =>
+      CheckOutEntity(inTime: inTime, locationData: locationData.toEntity());
 
   factory CheckOutModel.fromEntity(CheckOutEntity entity) => CheckOutModel(
     inTime: entity.inTime,
-    locationData: LocationDataModel(
-      lat: entity.locationData.lat,
-      lng: entity.locationData.lng,
-    ),
+    locationData: LocationDataModel.fromEntity(entity.locationData),
   );
 
   factory CheckOutModel.fromJson(Map<String, dynamic> json) =>

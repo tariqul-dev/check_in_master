@@ -27,10 +27,7 @@ class CheckInModel {
 
   factory CheckInModel.fromEntity(CheckInEntity entity) => CheckInModel(
     inTime: entity.inTime,
-    locationData: LocationDataModel(
-      lat: entity.locationData.lat,
-      lng: entity.locationData.lng,
-    ),
+    locationData: LocationDataModel.fromEntity(entity.locationData),
     name: entity.name,
     email: entity.email,
   );
