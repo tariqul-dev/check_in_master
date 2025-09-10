@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:check_in_master/src/core/bottom_sheets/show_saved_locations_bottom_sheet.dart';
 import 'package:check_in_master/src/core/bottom_sheets/show_single_input_bottom_sheet.dart';
 import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
@@ -62,9 +63,36 @@ class _SetLocationPageState extends State<SetLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Select check in point')),
+      appBar: AppBar(
+        title: Text('Select check in point'),
+
+        actions: [
+          IconButton(
+            onPressed: () {
+              final locData = LocationDataEntity(
+                id: "ewr",
+                name: "Dhaka",
+                lng: 3.2,
+                lat: 4.3,
+                createdAt: 1757517670824,
+                active: true,
+              );
+
+              final lsLoc = List.generate(34, (index) => locData);
+
+              showSavedLocationsBottomSheet(
+                context,
+                locations: lsLoc,
+                onPressedItem: _onPressedLocationListItem,
+              );
+            },
+
+            icon: Icon(Icons.list),
+          ),
+        ],
+      ),
       body: _buildBody(),
-      bottomSheet: _buildSaveLocationButton(),
+      bottomNavigationBar: _buildSaveLocationButton(),
     );
   }
 
@@ -75,9 +103,12 @@ class _SetLocationPageState extends State<SetLocationPage> {
   Widget _buildSaveLocationButton() {
     return Padding(
       padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
         bottom: MediaQuery.of(context).viewPadding.bottom,
       ),
       child: FilledButton(
+
         onPressed: () async {
           await showSingleInputBottomSheet(
             context,
@@ -108,12 +139,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
             _mapController = controller;
           },
           onTap: (LatLng tappedPoint) {
-            currentLocation.value = tappedPoint;
-            _setMapCameraPosition(tappedPoint);
-
-            print(
-              'Tapped Location: ${tappedPoint.latitude}, ${tappedPoint.longitude}',
-            );
+            _setCurrentLocation(tappedPoint);
           },
           markers: {
             Marker(
@@ -147,8 +173,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
         DialogUtils.hideDialog(context);
         _currentActiveLocation = s.locationData;
         final latLng = LatLng(s.locationData.lat, s.locationData.lng);
-        currentLocation.value = latLng;
-        _setMapCameraPosition(latLng);
+        _setCurrentLocation(latLng);
       },
       saveLocationSuccess: (_) {
         _loadingCubit.completeLoading();
@@ -160,6 +185,17 @@ class _SetLocationPageState extends State<SetLocationPage> {
         );
       },
     );
+  }
+
+  void _onPressedLocationListItem(locationDataEntity) {
+    final latLng = LatLng(locationDataEntity.lat, locationDataEntity.lng);
+
+    _setCurrentLocation(latLng);
+  }
+
+  void _setCurrentLocation(LatLng latLng) {
+    currentLocation.value = latLng;
+    _setMapCameraPosition(latLng);
   }
 
   void _setMapCameraPosition(LatLng latLng) {
