@@ -8,7 +8,6 @@ import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SetLocationPage extends StatefulWidget {
@@ -30,7 +29,6 @@ class SetLocationPage extends StatefulWidget {
 class _SetLocationPageState extends State<SetLocationPage> {
   late final SetLocationCubit _setLocationCubit;
   late final LoadingHudCubit _loadingCubit;
-  late final TextEditingController _nameTextController;
 
   final ValueNotifier<LatLng> currentLocation = ValueNotifier(
     defaultLocationData,
@@ -49,8 +47,6 @@ class _SetLocationPageState extends State<SetLocationPage> {
     _setLocationSubscription = _setLocationCubit.stream.listen(
       _setLocationStateListener,
     );
-
-    _nameTextController = TextEditingController();
     _setLocationCubit.getLocationData();
   }
 
@@ -60,7 +56,6 @@ class _SetLocationPageState extends State<SetLocationPage> {
     _setLocationCubit.close();
     _mapController?.dispose();
     _setLocationSubscription.cancel();
-    _nameTextController.dispose();
     super.dispose();
   }
 
@@ -86,12 +81,13 @@ class _SetLocationPageState extends State<SetLocationPage> {
         onPressed: () async {
           await showSingleInputBottomSheet(
             context,
-            nameController: _nameTextController,
-          );
-          _setLocationCubit.saveLocationData(
-            currentLocation.value,
-            _nameTextController.text.trim(),
-            _currentActiveLocation?.id,
+            onPressSave: (name) {
+              _setLocationCubit.saveLocationData(
+                locationData: currentLocation.value,
+                locationName: name,
+                currentActiveLocationId: _currentActiveLocation?.id,
+              );
+            },
           );
         },
         child: Text('Save location'),

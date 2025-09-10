@@ -1,13 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
-import 'package:check_in_master/src/core/errors/failures/no_data_found_failure.dart';
 import 'package:check_in_master/src/core/params/no_params.dart';
 import 'package:check_in_master/src/core/usecases/get_location_data.dart';
 import 'package:check_in_master/src/features/store_location/domain/usecases/save_location_data.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 
 part 'set_location_state.dart';
 
@@ -21,13 +20,14 @@ class SetLocationCubit extends Cubit<SetLocationState> {
   SetLocationCubit(this._saveLocationData, this._getLocationData)
     : super(const SetLocationState.initial());
 
-  Future<void> saveLocationData(
-    LatLng locationData,
-    String locationName,
-    String? currentActiveLocationId,
-  ) async {
+  Future<void> saveLocationData({
+    required LatLng locationData,
+    required String locationName,
+    required String? currentActiveLocationId,
+  }) async {
     emit(SetLocationState.inProgress());
     final locationDataEntity = LocationDataEntity(
+      id: DateTime.now().toString() + Uuid().v4(),
       lat: locationData.latitude,
       lng: locationData.longitude,
       name: locationName,
