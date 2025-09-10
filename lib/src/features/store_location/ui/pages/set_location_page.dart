@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:check_in_master/src/core/bottom_sheets/show_single_input_bottom_sheet.dart';
 import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
@@ -67,12 +68,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
   }
 
   Widget _buildBody() {
-    return SafeArea(
-      child: BlocBuilder(
-        bloc: _setLocationCubit,
-        builder: (context, state) => _buildMap(),
-      ),
-    );
+    return SafeArea(child: _buildMap());
   }
 
   Widget _buildSaveLocationButton() {
@@ -80,10 +76,10 @@ class _SetLocationPageState extends State<SetLocationPage> {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewPadding.bottom,
       ),
-
       child: FilledButton(
         onPressed: () {
-          _setLocationCubit.saveLocationData(currentLocation.value);
+          showSingleInputBottomSheet(context);
+          // _setLocationCubit.saveLocationData(currentLocation.value);
         },
         child: Text('Save location'),
       ),
