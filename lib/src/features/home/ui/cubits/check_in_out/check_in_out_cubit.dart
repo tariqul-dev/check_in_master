@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:check_in_master/src/core/params/no_params.dart';
-import 'package:check_in_master/src/core/usecases/get_location_data.dart';
+import 'package:check_in_master/src/core/usecases/get_active_location_data.dart';
 import 'package:check_in_master/src/features/home/domain/usecases/check_eligibility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,7 +12,7 @@ part 'check_in_out_cubit.freezed.dart';
 
 @Injectable()
 class CheckInOutCubit extends Cubit<CheckInOutState> {
-  final GetLocationData _getLocationData;
+  final GetActiveLocationData _getLocationData;
   final CheckEligibility _checkEligibility;
 
   CheckInOutCubit(this._getLocationData, this._checkEligibility)

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class LocationDataEntity extends Equatable {
-  final String? id;
+  final String id;
   final double lat;
   final double lng;
   final String name;
@@ -9,7 +9,7 @@ class LocationDataEntity extends Equatable {
   final int createdAt;
 
   const LocationDataEntity({
-    this.id,
+    required this.id,
     required this.lat,
     required this.lng,
     required this.name,

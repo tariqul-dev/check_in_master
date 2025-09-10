@@ -7,5 +7,7 @@ abstract class StoreLocationRepository {
     String? currentActiveLocationId,
   });
 
-  AsyncResult<LocationDataEntity> getLocationData();
+  AsyncResult<LocationDataEntity> getActiveLocationData();
+
+  AsyncResult<List<LocationDataEntity>> getLocations();
 }

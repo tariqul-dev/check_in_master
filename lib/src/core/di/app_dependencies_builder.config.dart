@@ -13,8 +13,8 @@ import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.da
     as _i100;
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart'
     as _i205;
-import 'package:check_in_master/src/core/usecases/get_location_data.dart'
-    as _i602;
+import 'package:check_in_master/src/core/usecases/get_active_location_data.dart'
+    as _i451;
 import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart'
     as _i483;
 import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart'
@@ -41,8 +41,12 @@ import 'package:check_in_master/src/features/store_location/data/repositories/st
     as _i423;
 import 'package:check_in_master/src/features/store_location/domain/repositories/store_location_repository.dart'
     as _i273;
+import 'package:check_in_master/src/features/store_location/domain/usecases/get_locations.dart'
+    as _i381;
 import 'package:check_in_master/src/features/store_location/domain/usecases/save_location_data.dart'
     as _i389;
+import 'package:check_in_master/src/features/store_location/ui/cubits/location_fetching/location_fetching_cubit.dart'
+    as _i330;
 import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart'
     as _i262;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
@@ -75,21 +79,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i599.HandlePermission>(
       () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
+    gh.factory<_i451.GetActiveLocationData>(
+      () => _i451.GetActiveLocationData(
+        repository: gh<_i273.StoreLocationRepository>(),
+      ),
+    );
     gh.factory<_i389.SaveLocationData>(
       () => _i389.SaveLocationData(
         repository: gh<_i273.StoreLocationRepository>(),
       ),
     );
-    gh.factory<_i602.GetLocationData>(
-      () => _i602.GetLocationData(
-        repository: gh<_i273.StoreLocationRepository>(),
-      ),
+    gh.factory<_i381.GetLocations>(
+      () => _i381.GetLocations(repository: gh<_i273.StoreLocationRepository>()),
     );
-    gh.factory<_i262.SetLocationCubit>(
-      () => _i262.SetLocationCubit(
-        gh<_i389.SaveLocationData>(),
-        gh<_i602.GetLocationData>(),
-      ),
+    gh.factory<_i330.LocationFetchingCubit>(
+      () => _i330.LocationFetchingCubit(gh<_i381.GetLocations>()),
     );
     gh.factory<_i677.HomeRepository>(
       () => _i980.HomeRepositoryImpl(
@@ -97,11 +101,14 @@ extension GetItInjectableX on _i174.GetIt {
         eligibilityChecker: gh<_i483.EligibilityChecker>(),
       ),
     );
+    gh.factory<_i262.SetLocationCubit>(
+      () => _i262.SetLocationCubit(
+        gh<_i389.SaveLocationData>(),
+        gh<_i451.GetActiveLocationData>(),
+      ),
+    );
     gh.factory<_i261.DoCheckIn>(
       () => _i261.DoCheckIn(repository: gh<_i677.HomeRepository>()),
-    );
-    gh.factory<_i468.GetPermissionStatus>(
-      () => _i468.GetPermissionStatus(repository: gh<_i677.HomeRepository>()),
     );
     gh.factory<_i939.DoCheckOut>(
       () => _i939.DoCheckOut(repository: gh<_i677.HomeRepository>()),
@@ -109,9 +116,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i284.CheckEligibility>(
       () => _i284.CheckEligibility(repository: gh<_i677.HomeRepository>()),
     );
+    gh.factory<_i468.GetPermissionStatus>(
+      () => _i468.GetPermissionStatus(repository: gh<_i677.HomeRepository>()),
+    );
     gh.factory<_i1016.CheckInOutCubit>(
       () => _i1016.CheckInOutCubit(
-        gh<_i602.GetLocationData>(),
+        gh<_i451.GetActiveLocationData>(),
         gh<_i284.CheckEligibility>(),
       ),
     );

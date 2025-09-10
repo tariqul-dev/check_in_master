@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:check_in_master/src/core/params/no_params.dart';
-import 'package:check_in_master/src/core/usecases/get_location_data.dart';
+import 'package:check_in_master/src/core/usecases/get_active_location_data.dart';
 import 'package:check_in_master/src/features/store_location/domain/usecases/save_location_data.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,7 +15,7 @@ part 'set_location_cubit.freezed.dart';
 @Injectable()
 class SetLocationCubit extends Cubit<SetLocationState> {
   final SaveLocationData _saveLocationData;
-  final GetLocationData _getLocationData;
+  final GetActiveLocationData _getLocationData;
 
   SetLocationCubit(this._saveLocationData, this._getLocationData)
     : super(const SetLocationState.initial());

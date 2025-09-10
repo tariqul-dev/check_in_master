@@ -14,36 +14,24 @@ class RemoteDataSource {
     String? currentActiveLocationId,
   ) async {
     if (currentActiveLocationId != null) {
-      deactivateLocationById(currentActiveLocationId);
+      updateLocationActivationById(currentActiveLocationId, false);
     }
     await firestore.collection('locations').add(locationDataModel.toJson());
     return true;
   }
 
-  Future<void> deactivateLocationById(String currentActiveLocationId) async {
+  Future<void> updateLocationActivationById(
+    String currentActiveLocationId,
+    bool active,
+  ) async {
     await firestore.collection('locations').doc(currentActiveLocationId).update(
-      {'active': false},
+      {'active': active},
     );
   }
 
-  Future<void> updateLocationsStatus() async {
-    final batch = firestore.batch();
+  Future<void> updateLocationsStatus() async {}
 
-    await _runBatchUpdate(batch);
-
-    await batch.commit();
-  }
-
-  Future<void> _runBatchUpdate(WriteBatch batch) async {
-    final snapshot = await firestore.collection('locations').get();
-    if (snapshot.docs.isEmpty) return;
-
-    for (final doc in snapshot.docs) {
-      batch.update(doc.reference, {'active': false});
-    }
-  }
-
-  Future<LocationDataModel> getLocationData() async {
+  Future<LocationDataModel> getActiveLocationData() async {
     final querySnapshot = await firestore
         .collection('locations')
         .where('active', isEqualTo: true)
@@ -52,6 +40,19 @@ class RemoteDataSource {
     if (querySnapshot.docs.isNotEmpty) {
       final doc = querySnapshot.docs.first;
       return LocationDataModel.fromFirestore(doc.id, doc.data());
+    } else {
+      throw NoDataFoundException(message: 'No data found');
+    }
+  }
+
+  Future<List<LocationDataModel>> getLocations() async {
+    final querySnapshot = await firestore.collection('locations').get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final locationList = querySnapshot.docs
+          .map((doc) => LocationDataModel.fromFirestore(doc.id, doc.data()))
+          .toList();
+      return locationList;
     } else {
       throw NoDataFoundException(message: 'No data found');
     }

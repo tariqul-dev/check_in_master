@@ -7,13 +7,13 @@ import 'package:injectable/injectable.dart';
 import '../../features/store_location/domain/repositories/store_location_repository.dart';
 
 @Injectable()
-class GetLocationData implements BaseUseCase<NoParams, LocationDataEntity> {
+class GetActiveLocationData implements BaseUseCase<NoParams, LocationDataEntity> {
   final StoreLocationRepository repository;
 
-  GetLocationData({required this.repository});
+  GetActiveLocationData({required this.repository});
 
   @override
   AsyncResult<LocationDataEntity> call(NoParams input) {
-    return repository.getLocationData();
+    return repository.getActiveLocationData();
   }
 }

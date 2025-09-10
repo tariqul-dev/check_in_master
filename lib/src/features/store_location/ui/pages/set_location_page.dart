@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:check_in_master/src/core/bottom_sheets/show_saved_locations_bottom_sheet.dart';
+import 'package:check_in_master/src/features/store_location/ui/bottom_sheets/show_saved_locations_bottom_sheet.dart';
 import 'package:check_in_master/src/core/bottom_sheets/show_single_input_bottom_sheet.dart';
 import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
+import 'package:check_in_master/src/features/store_location/ui/cubits/location_fetching/location_fetching_cubit.dart';
 import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,6 +31,7 @@ class SetLocationPage extends StatefulWidget {
 class _SetLocationPageState extends State<SetLocationPage> {
   late final SetLocationCubit _setLocationCubit;
   late final LoadingHudCubit _loadingCubit;
+  late final LocationFetchingCubit _locationFetchingCubit;
 
   final ValueNotifier<LatLng> currentLocation = ValueNotifier(
     defaultLocationData,
@@ -39,24 +41,35 @@ class _SetLocationPageState extends State<SetLocationPage> {
 
   late final StreamSubscription<SetLocationState> _setLocationSubscription;
   LocationDataEntity? _currentActiveLocation;
+  late final StreamSubscription<LocationFetchingState>
+  _locationFetchingSubscription;
+
+  Map<String, LocationDataEntity>? _locationsMap;
+  LocationDataEntity? _selectedLocationEntity;
 
   @override
   void initState() {
     super.initState();
     _setLocationCubit = getIt<SetLocationCubit>();
     _loadingCubit = getIt<LoadingHudCubit>();
+    _locationFetchingCubit = getIt<LocationFetchingCubit>();
     _setLocationSubscription = _setLocationCubit.stream.listen(
       _setLocationStateListener,
     );
     _setLocationCubit.getLocationData();
+    _locationFetchingSubscription = _locationFetchingCubit.stream.listen(
+      _locationFetchingStateListener,
+    );
   }
 
   @override
   void dispose() {
     _loadingCubit.close();
     _setLocationCubit.close();
+    _locationFetchingCubit.close();
     _mapController?.dispose();
     _setLocationSubscription.cancel();
+    _locationFetchingSubscription.cancel();
     super.dispose();
   }
 
@@ -69,20 +82,10 @@ class _SetLocationPageState extends State<SetLocationPage> {
         actions: [
           IconButton(
             onPressed: () {
-              final locData = LocationDataEntity(
-                id: "ewr",
-                name: "Dhaka",
-                lng: 3.2,
-                lat: 4.3,
-                createdAt: 1757517670824,
-                active: true,
-              );
-
-              final lsLoc = List.generate(34, (index) => locData);
-
+              _locationFetchingCubit.getLocations();
               showSavedLocationsBottomSheet(
+                _locationFetchingCubit,
                 context,
-                locations: lsLoc,
                 onPressedItem: _onPressedLocationListItem,
               );
             },
@@ -108,7 +111,6 @@ class _SetLocationPageState extends State<SetLocationPage> {
         bottom: MediaQuery.of(context).viewPadding.bottom,
       ),
       child: FilledButton(
-
         onPressed: () async {
           await showSingleInputBottomSheet(
             context,
@@ -187,9 +189,27 @@ class _SetLocationPageState extends State<SetLocationPage> {
     );
   }
 
-  void _onPressedLocationListItem(locationDataEntity) {
-    final latLng = LatLng(locationDataEntity.lat, locationDataEntity.lng);
+  void _locationFetchingStateListener(LocationFetchingState state) {
+    state.maybeMap(
+      fetchLocationData: (s) {
+        _locationsMap = _locationsListToMap(s.locationsData);
+      },
+      orElse: () {},
+    );
+  }
 
+  Map<String, LocationDataEntity> _locationsListToMap(
+    List<LocationDataEntity> list,
+  ) {
+    return {for (var loc in list) loc.id: loc};
+  }
+
+  void _onPressedLocationListItem(LocationDataEntity locationDataEntity) {
+    locationDataEntity.id;
+    if (_locationsMap?[locationDataEntity.id] != null) {
+      _selectedLocationEntity = _locationsMap?[locationDataEntity.id];
+    }
+    final latLng = LatLng(locationDataEntity.lat, locationDataEntity.lng);
     _setCurrentLocation(latLng);
   }
 
