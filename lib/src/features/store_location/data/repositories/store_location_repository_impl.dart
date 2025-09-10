@@ -28,10 +28,14 @@ class StoreLocationRepositoryImpl implements StoreLocationRepository {
   }
 
   @override
-  AsyncResult<bool> saveLocationData(LocationDataEntity locationData) async {
+  AsyncResult<bool> saveLocationData(
+    LocationDataEntity locationData, {
+    String? currentActiveLocationId,
+  }) async {
     try {
       final isSavedData = await remoteDataSource.saveLocationData(
         LocationDataModel.fromEntity(locationData),
+        currentActiveLocationId,
       );
       return Left(isSavedData);
     } catch (e) {

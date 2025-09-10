@@ -9,16 +9,21 @@ class RemoteDataSource {
 
   RemoteDataSource(this.firestore);
 
-  Future<bool> saveLocationData(LocationDataModel locationDataModel) async {
-    final batch = firestore.batch();
-
-    await _runBatchUpdate(batch);
-
-    final newDoc = firestore.collection('locations').doc();
-    batch.set(newDoc, locationDataModel.toJson());
-
-    await batch.commit();
+  Future<bool> saveLocationData(
+    LocationDataModel locationDataModel,
+    String? currentActiveLocationId,
+  ) async {
+    if (currentActiveLocationId != null) {
+      deactivateLocationById(currentActiveLocationId);
+    }
+    await firestore.collection('locations').add(locationDataModel.toJson());
     return true;
+  }
+
+  Future<void> deactivateLocationById(String currentActiveLocationId) async {
+    await firestore.collection('locations').doc(currentActiveLocationId).update(
+      {'active': false},
+    );
   }
 
   Future<void> updateLocationsStatus() async {
@@ -45,8 +50,8 @@ class RemoteDataSource {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      final data = querySnapshot.docs.first.data();
-      return LocationDataModel.fromJson(data);
+      final doc = querySnapshot.docs.first;
+      return LocationDataModel.fromFirestore(doc.id, doc.data());
     } else {
       throw NoDataFoundException(message: 'No data found');
     }

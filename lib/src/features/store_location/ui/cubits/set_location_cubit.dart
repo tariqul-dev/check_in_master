@@ -21,15 +21,25 @@ class SetLocationCubit extends Cubit<SetLocationState> {
   SetLocationCubit(this._saveLocationData, this._getLocationData)
     : super(const SetLocationState.initial());
 
-  Future<void> saveLocationData(LatLng locationData) async {
+  Future<void> saveLocationData(
+    LatLng locationData,
+    String locationName,
+    String? currentActiveLocationId,
+  ) async {
     emit(SetLocationState.inProgress());
     final locationDataEntity = LocationDataEntity(
       lat: locationData.latitude,
       lng: locationData.longitude,
+      name: locationName,
       active: true,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
-    final result = await _saveLocationData(locationDataEntity);
+    final result = await _saveLocationData(
+      LocationInputEntity(
+        locationDataEntity: locationDataEntity,
+        currentActiveLocationId: currentActiveLocationId,
+      ),
+    );
 
     await result.fold(
       (l) async => emit(SetLocationState.saveLocationSuccess()),

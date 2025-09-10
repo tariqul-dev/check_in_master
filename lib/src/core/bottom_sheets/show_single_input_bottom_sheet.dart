@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'show_app_bottom_sheet.dart';
 
-Future<String?> showSingleInputBottomSheet(BuildContext context) async {
-  final TextEditingController _nameController = TextEditingController();
-
+Future<String?> showSingleInputBottomSheet(
+  BuildContext context, {
+  required TextEditingController nameController,
+}) async {
   return await showAppBottomSheet<String>(
     context: context,
     builder: (ctx) {
@@ -17,7 +18,7 @@ Future<String?> showSingleInputBottomSheet(BuildContext context) async {
           ),
           const SizedBox(height: 16),
           TextField(
-            controller: _nameController,
+            controller: nameController,
             decoration: const InputDecoration(
               labelText: "Location name",
               border: OutlineInputBorder(),
@@ -28,7 +29,7 @@ Future<String?> showSingleInputBottomSheet(BuildContext context) async {
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                final name = _nameController.text.trim();
+                final name = nameController.text.trim();
                 if (name.isEmpty) {
                   ScaffoldMessenger.of(ctx).showSnackBar(
                     const SnackBar(content: Text("Please enter a name")),

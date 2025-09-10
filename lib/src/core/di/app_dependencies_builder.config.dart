@@ -75,13 +75,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i599.HandlePermission>(
       () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
-    gh.factory<_i602.GetLocationData>(
-      () => _i602.GetLocationData(
+    gh.factory<_i389.SaveLocationData>(
+      () => _i389.SaveLocationData(
         repository: gh<_i273.StoreLocationRepository>(),
       ),
     );
-    gh.factory<_i389.SaveLocationData>(
-      () => _i389.SaveLocationData(
+    gh.factory<_i602.GetLocationData>(
+      () => _i602.GetLocationData(
         repository: gh<_i273.StoreLocationRepository>(),
       ),
     );
@@ -100,14 +100,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i261.DoCheckIn>(
       () => _i261.DoCheckIn(repository: gh<_i677.HomeRepository>()),
     );
+    gh.factory<_i468.GetPermissionStatus>(
+      () => _i468.GetPermissionStatus(repository: gh<_i677.HomeRepository>()),
+    );
     gh.factory<_i939.DoCheckOut>(
       () => _i939.DoCheckOut(repository: gh<_i677.HomeRepository>()),
     );
     gh.factory<_i284.CheckEligibility>(
       () => _i284.CheckEligibility(repository: gh<_i677.HomeRepository>()),
-    );
-    gh.factory<_i468.GetPermissionStatus>(
-      () => _i468.GetPermissionStatus(repository: gh<_i677.HomeRepository>()),
     );
     gh.factory<_i1016.CheckInOutCubit>(
       () => _i1016.CheckInOutCubit(

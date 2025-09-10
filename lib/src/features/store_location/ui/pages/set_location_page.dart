@@ -5,6 +5,7 @@ import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
+import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,8 @@ class SetLocationPage extends StatefulWidget {
 class _SetLocationPageState extends State<SetLocationPage> {
   late final SetLocationCubit _setLocationCubit;
   late final LoadingHudCubit _loadingCubit;
+  late final TextEditingController _nameTextController;
+
   final ValueNotifier<LatLng> currentLocation = ValueNotifier(
     defaultLocationData,
   );
@@ -36,6 +39,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
   GoogleMapController? _mapController;
 
   late final StreamSubscription<SetLocationState> _setLocationSubscription;
+  LocationDataEntity? _currentActiveLocation;
 
   @override
   void initState() {
@@ -46,6 +50,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
       _setLocationStateListener,
     );
 
+    _nameTextController = TextEditingController();
     _setLocationCubit.getLocationData();
   }
 
@@ -55,6 +60,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
     _setLocationCubit.close();
     _mapController?.dispose();
     _setLocationSubscription.cancel();
+    _nameTextController.dispose();
     super.dispose();
   }
 
@@ -77,9 +83,16 @@ class _SetLocationPageState extends State<SetLocationPage> {
         bottom: MediaQuery.of(context).viewPadding.bottom,
       ),
       child: FilledButton(
-        onPressed: () {
-          showSingleInputBottomSheet(context);
-          // _setLocationCubit.saveLocationData(currentLocation.value);
+        onPressed: () async {
+          await showSingleInputBottomSheet(
+            context,
+            nameController: _nameTextController,
+          );
+          _setLocationCubit.saveLocationData(
+            currentLocation.value,
+            _nameTextController.text.trim(),
+            _currentActiveLocation?.id,
+          );
         },
         child: Text('Save location'),
       ),
@@ -136,6 +149,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
       fetchLocationData: (s) {
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
+        _currentActiveLocation = s.locationData;
         final latLng = LatLng(s.locationData.lat, s.locationData.lng);
         currentLocation.value = latLng;
         _setMapCameraPosition(latLng);
