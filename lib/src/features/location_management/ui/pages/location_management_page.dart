@@ -122,18 +122,7 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
         bottom: MediaQuery.of(context).viewPadding.bottom,
       ),
       child: FilledButton(
-        onPressed: () async {
-          await showSingleInputBottomSheet(
-            context,
-            onPressSave: (name) {
-              _locationOperationCubit.saveLocationData(
-                locationData: currentLocation.value,
-                locationName: name,
-                currentActiveLocationId: _currentActiveLocation?.id,
-              );
-            },
-          );
-        },
+        onPressed: _onPressedSaveButton,
         child: Text('Save location'),
       ),
     );
@@ -152,6 +141,7 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
             _mapController = controller;
           },
           onTap: (LatLng tappedPoint) {
+            _selectedLocationEntity = null;
             _setCurrentLocation(tappedPoint);
           },
           markers: {
@@ -183,13 +173,14 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
         DialogUtils.hideDialog(context);
         _loadingCubit.completeLoading();
       },
-      saveLocationSuccess: (_) {
+      saveLocationSuccess: (saveLocationSuccessState) {
+        _currentActiveLocation = saveLocationSuccessState.newLocation;
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
         DialogUtils.showMessageDialog(
           context: context,
           title: "Success",
-          message: "Check in point saved successfully",
+          message: "Operation applied successfully",
         );
       },
       orElse: () {
@@ -211,7 +202,36 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
   Map<String, LocationDataEntity> _locationsListToMap(
     List<LocationDataEntity> list,
   ) {
-    return {for (var loc in list) loc.id: loc};
+    Map<String, LocationDataEntity> locMap = {};
+
+    for (var loc in list) {
+      if (loc.active == true) {
+        _currentActiveLocation = loc;
+      }
+      locMap[loc.id] = loc;
+    }
+
+    return locMap;
+  }
+
+  void _onPressedSaveButton() async {
+    if (_selectedLocationEntity != null && _currentActiveLocation != null) {
+      _locationOperationCubit.activeSavedLocation(
+        currentActiveLocationId: _currentActiveLocation!.id,
+        locationDataEntity: _selectedLocationEntity!,
+      );
+      return;
+    }
+    await showSingleInputBottomSheet(
+      context,
+      onPressSave: (name) {
+        _locationOperationCubit.saveLocationData(
+          locationData: currentLocation.value,
+          locationName: name,
+          currentActiveLocationId: _currentActiveLocation?.id,
+        );
+      },
+    );
   }
 
   void _onPressedLocationListItem(LocationDataEntity locationDataEntity) {

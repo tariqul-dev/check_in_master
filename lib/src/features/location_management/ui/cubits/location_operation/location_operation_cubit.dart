@@ -3,10 +3,10 @@ import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:check_in_master/src/core/params/no_params.dart';
 import 'package:check_in_master/src/core/usecases/get_active_location_data.dart';
 import 'package:check_in_master/src/features/location_management/domain/usecases/save_location_data.dart';
+import 'package:check_in_master/src/features/location_management/domain/usecases/update_location_active_status_by_id.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
-import 'package:uuid/uuid.dart';
 
 part 'location_operation_state.dart';
 
@@ -16,9 +16,13 @@ part 'location_operation_cubit.freezed.dart';
 class LocationOperationCubit extends Cubit<LocationOperationState> {
   final SaveLocationData _saveLocationData;
   final GetActiveLocationData _getActiveLocationData;
+  final UpdateLocationActiveStatusById _updateLocationActiveStatusById;
 
-  LocationOperationCubit(this._saveLocationData, this._getActiveLocationData)
-    : super(const LocationOperationState.initial());
+  LocationOperationCubit(
+    this._saveLocationData,
+    this._getActiveLocationData,
+    this._updateLocationActiveStatusById,
+  ) : super(const LocationOperationState.initial());
 
   Future<void> saveLocationData({
     required LatLng locationData,
@@ -27,7 +31,7 @@ class LocationOperationCubit extends Cubit<LocationOperationState> {
   }) async {
     emit(LocationOperationState.inProgress());
     final locationDataEntity = LocationDataEntity(
-      id: DateTime.now().toString() + Uuid().v4(),
+      id: '',
       lat: locationData.latitude,
       lng: locationData.longitude,
       name: locationName,
@@ -42,7 +46,27 @@ class LocationOperationCubit extends Cubit<LocationOperationState> {
     );
 
     await result.fold(
-      (l) async => emit(LocationOperationState.saveLocationSuccess()),
+      (l) async =>
+          emit(LocationOperationState.saveLocationSuccess(newLocation: l)),
+      (r) async => emit(LocationOperationState.failure(message: r.message)),
+    );
+  }
+
+  Future<void> activeSavedLocation({
+    required String currentActiveLocationId,
+    required LocationDataEntity locationDataEntity,
+  }) async {
+    emit(LocationOperationState.inProgress());
+    final result = await _updateLocationActiveStatusById(
+      UpdateLocationActivationInput(
+        currentActiveLocationId: currentActiveLocationId,
+        updatableLocationEntity: locationDataEntity,
+      ),
+    );
+
+    await result.fold(
+      (l) async =>
+          emit(LocationOperationState.saveLocationSuccess(newLocation: l)),
       (r) async => emit(LocationOperationState.failure(message: r.message)),
     );
   }

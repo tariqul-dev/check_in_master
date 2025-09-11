@@ -37,14 +37,16 @@ import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart'
     as _i1062;
 import 'package:check_in_master/src/features/location_management/data/datasources/remote/remote_datasource.dart'
     as _i842;
-import 'package:check_in_master/src/features/location_management/data/repositories/store_location_repository_impl.dart'
-    as _i589;
+import 'package:check_in_master/src/features/location_management/data/repositories/location_management_repository_impl.dart'
+    as _i1036;
 import 'package:check_in_master/src/features/location_management/domain/repositories/location_management_repository.dart'
     as _i732;
 import 'package:check_in_master/src/features/location_management/domain/usecases/get_locations.dart'
     as _i820;
 import 'package:check_in_master/src/features/location_management/domain/usecases/save_location_data.dart'
     as _i1042;
+import 'package:check_in_master/src/features/location_management/domain/usecases/update_location_active_status_by_id.dart'
+    as _i260;
 import 'package:check_in_master/src/features/location_management/ui/cubits/location_fetching/location_fetching_cubit.dart'
     as _i175;
 import 'package:check_in_master/src/features/location_management/ui/cubits/location_operation/location_operation_cubit.dart'
@@ -75,8 +77,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
     gh.factory<_i732.LocationManagementRepository>(
-      () => _i589.LocationManagementRepositoryImpl(
+      () => _i1036.LocationManagementRepositoryImpl(
         remoteDataSource: gh<_i842.RemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i260.UpdateLocationActiveStatusById>(
+      () => _i260.UpdateLocationActiveStatusById(
+        repository: gh<_i732.LocationManagementRepository>(),
       ),
     );
     gh.factory<_i820.GetLocations>(
@@ -92,12 +99,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i451.GetActiveLocationData>(
       () => _i451.GetActiveLocationData(
         repository: gh<_i732.LocationManagementRepository>(),
-      ),
-    );
-    gh.factory<_i707.LocationOperationCubit>(
-      () => _i707.LocationOperationCubit(
-        gh<_i1042.SaveLocationData>(),
-        gh<_i451.GetActiveLocationData>(),
       ),
     );
     gh.factory<_i677.HomeRepository>(
@@ -117,6 +118,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i284.CheckEligibility>(
       () => _i284.CheckEligibility(repository: gh<_i677.HomeRepository>()),
+    );
+    gh.factory<_i707.LocationOperationCubit>(
+      () => _i707.LocationOperationCubit(
+        gh<_i1042.SaveLocationData>(),
+        gh<_i451.GetActiveLocationData>(),
+        gh<_i260.UpdateLocationActiveStatusById>(),
+      ),
     );
     gh.factory<_i1016.CheckInOutCubit>(
       () => _i1016.CheckInOutCubit(

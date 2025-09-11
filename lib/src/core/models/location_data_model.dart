@@ -5,7 +5,9 @@ part 'location_data_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class LocationDataModel {
+  @JsonKey(includeToJson: false)
   final String id;
+
   final double lat;
   final double lng;
   final String name;

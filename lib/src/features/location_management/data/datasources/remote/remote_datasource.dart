@@ -9,27 +9,52 @@ class RemoteDataSource {
 
   RemoteDataSource(this.firestore);
 
-  Future<bool> saveLocationData(
+  Future<LocationDataModel> saveLocationData(
     LocationDataModel locationDataModel,
     String? currentActiveLocationId,
   ) async {
     if (currentActiveLocationId != null) {
-      updateLocationActivationById(currentActiveLocationId, false);
+      await _updateLocationActivationById(
+        id: currentActiveLocationId,
+        active: false,
+      );
     }
-    await firestore.collection('locations').add(locationDataModel.toJson());
-    return true;
+    final docRef = await firestore
+        .collection('locations')
+        .add(locationDataModel.toJson());
+
+    final snapshot = await docRef.get();
+    final data = snapshot.data();
+
+    if (data == null) {
+      throw Exception("Failed to save location");
+    }
+
+    return LocationDataModel.fromFirestore(docRef.id, data);
   }
 
-  Future<void> updateLocationActivationById(
-    String currentActiveLocationId,
-    bool active,
-  ) async {
-    await firestore.collection('locations').doc(currentActiveLocationId).update(
-      {'active': active},
+  Future<String> updateActiveLocation({
+    required String currentActiveLocationId,
+    required String updatableLocationId,
+  }) async {
+    await _updateLocationActivationById(
+      id: currentActiveLocationId,
+      active: false,
+    );
+    return await _updateLocationActivationById(
+      id: updatableLocationId,
+      active: true,
     );
   }
 
-  Future<void> updateLocationsStatus() async {}
+  Future<String> _updateLocationActivationById({
+    required String id,
+    required bool active,
+  }) async {
+    await firestore.collection('locations').doc(id).update({'active': active});
+
+    return id;
+  }
 
   Future<LocationDataModel> getActiveLocationData() async {
     final querySnapshot = await firestore

@@ -131,14 +131,14 @@ return saveLocationSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function( String message)?  failure,TResult Function( LocationDataEntity locationData)?  fetchLocationData,TResult Function()?  saveLocationSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function( String message)?  failure,TResult Function( LocationDataEntity locationData)?  fetchLocationData,TResult Function( LocationDataEntity newLocation)?  saveLocationSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _Failure() when failure != null:
 return failure(_that.message);case _FetchLocationData() when fetchLocationData != null:
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess() when saveLocationSuccess != null:
-return saveLocationSuccess();case _:
+return saveLocationSuccess(_that.newLocation);case _:
   return orElse();
 
 }
@@ -156,14 +156,14 @@ return saveLocationSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function( String message)  failure,required TResult Function( LocationDataEntity locationData)  fetchLocationData,required TResult Function()  saveLocationSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function( String message)  failure,required TResult Function( LocationDataEntity locationData)  fetchLocationData,required TResult Function( LocationDataEntity newLocation)  saveLocationSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _InProgress():
 return inProgress();case _Failure():
 return failure(_that.message);case _FetchLocationData():
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess():
-return saveLocationSuccess();case _:
+return saveLocationSuccess(_that.newLocation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +180,14 @@ return saveLocationSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function( String message)?  failure,TResult? Function( LocationDataEntity locationData)?  fetchLocationData,TResult? Function()?  saveLocationSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function( String message)?  failure,TResult? Function( LocationDataEntity locationData)?  fetchLocationData,TResult? Function( LocationDataEntity newLocation)?  saveLocationSuccess,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _Failure() when failure != null:
 return failure(_that.message);case _FetchLocationData() when fetchLocationData != null:
 return fetchLocationData(_that.locationData);case _SaveLocationSuccess() when saveLocationSuccess != null:
-return saveLocationSuccess();case _:
+return saveLocationSuccess(_that.newLocation);case _:
   return null;
 
 }
@@ -395,32 +395,66 @@ as LocationDataEntity,
 
 
 class _SaveLocationSuccess implements LocationOperationState {
-  const _SaveLocationSuccess();
+  const _SaveLocationSuccess({required this.newLocation});
   
 
+ final  LocationDataEntity newLocation;
 
-
+/// Create a copy of LocationOperationState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SaveLocationSuccessCopyWith<_SaveLocationSuccess> get copyWith => __$SaveLocationSuccessCopyWithImpl<_SaveLocationSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveLocationSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveLocationSuccess&&(identical(other.newLocation, newLocation) || other.newLocation == newLocation));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,newLocation);
 
 @override
 String toString() {
-  return 'LocationOperationState.saveLocationSuccess()';
+  return 'LocationOperationState.saveLocationSuccess(newLocation: $newLocation)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SaveLocationSuccessCopyWith<$Res> implements $LocationOperationStateCopyWith<$Res> {
+  factory _$SaveLocationSuccessCopyWith(_SaveLocationSuccess value, $Res Function(_SaveLocationSuccess) _then) = __$SaveLocationSuccessCopyWithImpl;
+@useResult
+$Res call({
+ LocationDataEntity newLocation
+});
 
 
+
+
+}
+/// @nodoc
+class __$SaveLocationSuccessCopyWithImpl<$Res>
+    implements _$SaveLocationSuccessCopyWith<$Res> {
+  __$SaveLocationSuccessCopyWithImpl(this._self, this._then);
+
+  final _SaveLocationSuccess _self;
+  final $Res Function(_SaveLocationSuccess) _then;
+
+/// Create a copy of LocationOperationState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? newLocation = null,}) {
+  return _then(_SaveLocationSuccess(
+newLocation: null == newLocation ? _self.newLocation : newLocation // ignore: cast_nullable_to_non_nullable
+as LocationDataEntity,
+  ));
+}
+
+
+}
 
 // dart format on

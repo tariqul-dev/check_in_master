@@ -6,13 +6,13 @@ import 'package:injectable/injectable.dart';
 import '../repositories/location_management_repository.dart';
 
 @Injectable()
-class SaveLocationData implements BaseUseCase<LocationInputEntity, bool> {
+class SaveLocationData implements BaseUseCase<LocationInputEntity, LocationDataEntity> {
   final LocationManagementRepository repository;
 
   SaveLocationData({required this.repository});
 
   @override
-  AsyncResult<bool> call(LocationInputEntity input) {
+  AsyncResult<LocationDataEntity> call(LocationInputEntity input) {
     return repository.saveLocationData(
       input.locationDataEntity,
       currentActiveLocationId: input.currentActiveLocationId,

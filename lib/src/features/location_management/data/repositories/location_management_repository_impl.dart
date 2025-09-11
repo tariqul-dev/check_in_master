@@ -29,16 +29,35 @@ class LocationManagementRepositoryImpl implements LocationManagementRepository {
   }
 
   @override
-  AsyncResult<bool> saveLocationData(
+  AsyncResult<LocationDataEntity> saveLocationData(
     LocationDataEntity locationData, {
     String? currentActiveLocationId,
   }) async {
     try {
-      final isSavedData = await remoteDataSource.saveLocationData(
+      final savedData = await remoteDataSource.saveLocationData(
         LocationDataModel.fromEntity(locationData),
         currentActiveLocationId,
       );
-      return Left(isSavedData);
+      return Left(savedData.toEntity());
+    } catch (e) {
+      return Right(BaseFailure(e.toString()));
+    }
+  }
+
+  @override
+  AsyncResult<LocationDataEntity> updateLocationActiveStatusById(
+    String currentActiveLocationId,
+    LocationDataEntity locationDataEntity,
+  ) async {
+    try {
+      final updatedLocationId = await remoteDataSource.updateActiveLocation(
+        currentActiveLocationId: currentActiveLocationId,
+        updatableLocationId: locationDataEntity.id,
+      );
+      if (updatedLocationId == locationDataEntity.id) {
+        return Left(locationDataEntity);
+      }
+      return Right(BaseFailure('Location activation failed'));
     } catch (e) {
       return Right(BaseFailure(e.toString()));
     }

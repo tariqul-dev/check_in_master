@@ -18,7 +18,6 @@ LocationDataModel _$LocationDataModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$LocationDataModelToJson(LocationDataModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'lat': instance.lat,
       'lng': instance.lng,
       'name': instance.name,

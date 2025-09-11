@@ -11,5 +11,5 @@ class LocationOperationState with _$LocationOperationState {
     required LocationDataEntity locationData,
   }) = _FetchLocationData;
 
-  const factory LocationOperationState.saveLocationSuccess() = _SaveLocationSuccess;
+  const factory LocationOperationState.saveLocationSuccess({required LocationDataEntity newLocation}) = _SaveLocationSuccess;
 }
