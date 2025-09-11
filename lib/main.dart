@@ -1,5 +1,5 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
-import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
+import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
@@ -20,7 +20,7 @@ class CheckInMasterApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Check In Master",
-      home: HomePage(),
+      home: AuthPage(),
     );
   }
 }
