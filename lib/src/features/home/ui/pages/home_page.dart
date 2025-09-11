@@ -4,7 +4,7 @@ import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
 import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart';
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart';
-import 'package:check_in_master/src/features/store_location/ui/pages/set_location_page.dart';
+import 'package:check_in_master/src/features/location_management/ui/pages/location_management_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20),
             FilledButton(
               onPressed: () {
-                Navigator.of(context).push(SetLocationPage.route());
+                Navigator.of(context).push(LocationManagementPage.route());
               },
               child: Text('Set office location'),
             ),

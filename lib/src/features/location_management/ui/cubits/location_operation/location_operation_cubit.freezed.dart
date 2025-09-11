@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'set_location_cubit.dart';
+part of 'location_operation_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'set_location_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$SetLocationState {
+mixin _$LocationOperationState {
 
 
 
@@ -20,7 +20,7 @@ mixin _$SetLocationState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetLocationState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocationOperationState);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SetLocationState()';
+  return 'LocationOperationState()';
 }
 
 
 }
 
 /// @nodoc
-class $SetLocationStateCopyWith<$Res>  {
-$SetLocationStateCopyWith(SetLocationState _, $Res Function(SetLocationState) __);
+class $LocationOperationStateCopyWith<$Res>  {
+$LocationOperationStateCopyWith(LocationOperationState _, $Res Function(LocationOperationState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [SetLocationState].
-extension SetLocationStatePatterns on SetLocationState {
+/// Adds pattern-matching-related methods to [LocationOperationState].
+extension LocationOperationStatePatterns on LocationOperationState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -198,7 +198,7 @@ return saveLocationSuccess();case _:
 /// @nodoc
 
 
-class _Initial implements SetLocationState {
+class _Initial implements LocationOperationState {
   const _Initial();
   
 
@@ -218,7 +218,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SetLocationState.initial()';
+  return 'LocationOperationState.initial()';
 }
 
 
@@ -230,7 +230,7 @@ String toString() {
 /// @nodoc
 
 
-class _InProgress implements SetLocationState {
+class _InProgress implements LocationOperationState {
   const _InProgress();
   
 
@@ -250,7 +250,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SetLocationState.inProgress()';
+  return 'LocationOperationState.inProgress()';
 }
 
 
@@ -262,13 +262,13 @@ String toString() {
 /// @nodoc
 
 
-class _Failure implements SetLocationState {
+class _Failure implements LocationOperationState {
   const _Failure({required this.message});
   
 
  final  String message;
 
-/// Create a copy of SetLocationState
+/// Create a copy of LocationOperationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -287,14 +287,14 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'SetLocationState.failure(message: $message)';
+  return 'LocationOperationState.failure(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$FailureCopyWith<$Res> implements $SetLocationStateCopyWith<$Res> {
+abstract mixin class _$FailureCopyWith<$Res> implements $LocationOperationStateCopyWith<$Res> {
   factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
 @useResult
 $Res call({
@@ -313,7 +313,7 @@ class __$FailureCopyWithImpl<$Res>
   final _Failure _self;
   final $Res Function(_Failure) _then;
 
-/// Create a copy of SetLocationState
+/// Create a copy of LocationOperationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_Failure(
@@ -328,13 +328,13 @@ as String,
 /// @nodoc
 
 
-class _FetchLocationData implements SetLocationState {
+class _FetchLocationData implements LocationOperationState {
   const _FetchLocationData({required this.locationData});
   
 
  final  LocationDataEntity locationData;
 
-/// Create a copy of SetLocationState
+/// Create a copy of LocationOperationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -353,14 +353,14 @@ int get hashCode => Object.hash(runtimeType,locationData);
 
 @override
 String toString() {
-  return 'SetLocationState.fetchLocationData(locationData: $locationData)';
+  return 'LocationOperationState.fetchLocationData(locationData: $locationData)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$FetchLocationDataCopyWith<$Res> implements $SetLocationStateCopyWith<$Res> {
+abstract mixin class _$FetchLocationDataCopyWith<$Res> implements $LocationOperationStateCopyWith<$Res> {
   factory _$FetchLocationDataCopyWith(_FetchLocationData value, $Res Function(_FetchLocationData) _then) = __$FetchLocationDataCopyWithImpl;
 @useResult
 $Res call({
@@ -379,7 +379,7 @@ class __$FetchLocationDataCopyWithImpl<$Res>
   final _FetchLocationData _self;
   final $Res Function(_FetchLocationData) _then;
 
-/// Create a copy of SetLocationState
+/// Create a copy of LocationOperationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? locationData = null,}) {
   return _then(_FetchLocationData(
@@ -394,7 +394,7 @@ as LocationDataEntity,
 /// @nodoc
 
 
-class _SaveLocationSuccess implements SetLocationState {
+class _SaveLocationSuccess implements LocationOperationState {
   const _SaveLocationSuccess();
   
 
@@ -414,7 +414,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SetLocationState.saveLocationSuccess()';
+  return 'LocationOperationState.saveLocationSuccess()';
 }
 
 

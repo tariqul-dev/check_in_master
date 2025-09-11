@@ -1,75 +1,81 @@
 import 'dart:async';
 
-import 'package:check_in_master/src/features/store_location/ui/bottom_sheets/show_saved_locations_bottom_sheet.dart';
 import 'package:check_in_master/src/core/bottom_sheets/show_single_input_bottom_sheet.dart';
 import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
-import 'package:check_in_master/src/features/store_location/ui/cubits/location_fetching/location_fetching_cubit.dart';
-import 'package:check_in_master/src/features/store_location/ui/cubits/set_location_cubit.dart';
+import 'package:check_in_master/src/features/location_management/ui/cubits/location_operation/location_operation_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class SetLocationPage extends StatefulWidget {
-  static const String path = '/SetLocationPage';
+import '../bottom_sheets/show_saved_locations_bottom_sheet.dart';
+import '../cubits/location_fetching/location_fetching_cubit.dart';
+
+class LocationManagementPage extends StatefulWidget {
+  static const String path = '/LocationManagementPage';
 
   static Route<dynamic> route() {
     return MaterialPageRoute(
-      builder: (_) => SetLocationPage(),
-      settings: RouteSettings(name: SetLocationPage.path),
+      builder: (_) => LocationManagementPage(),
+      settings: RouteSettings(name: LocationManagementPage.path),
     );
   }
 
-  const SetLocationPage({super.key});
+  const LocationManagementPage({super.key});
 
   @override
-  State<SetLocationPage> createState() => _SetLocationPageState();
+  State<LocationManagementPage> createState() => _LocationManagementPageState();
 }
 
-class _SetLocationPageState extends State<SetLocationPage> {
-  late final SetLocationCubit _setLocationCubit;
+class _LocationManagementPageState extends State<LocationManagementPage> {
+  late final LocationOperationCubit _locationOperationCubit;
   late final LoadingHudCubit _loadingCubit;
   late final LocationFetchingCubit _locationFetchingCubit;
+  late final StreamSubscription<LocationOperationState>
+  _locationOperationSubscription;
+  late final StreamSubscription<LocationFetchingState>
+  _locationFetchingSubscription;
 
   final ValueNotifier<LatLng> currentLocation = ValueNotifier(
     defaultLocationData,
   );
 
   GoogleMapController? _mapController;
-
-  late final StreamSubscription<SetLocationState> _setLocationSubscription;
   LocationDataEntity? _currentActiveLocation;
-  late final StreamSubscription<LocationFetchingState>
-  _locationFetchingSubscription;
-
   Map<String, LocationDataEntity>? _locationsMap;
   LocationDataEntity? _selectedLocationEntity;
 
   @override
   void initState() {
     super.initState();
-    _setLocationCubit = getIt<SetLocationCubit>();
+    _locationOperationCubit = getIt<LocationOperationCubit>();
     _loadingCubit = getIt<LoadingHudCubit>();
     _locationFetchingCubit = getIt<LocationFetchingCubit>();
-    _setLocationSubscription = _setLocationCubit.stream.listen(
-      _setLocationStateListener,
+
+    _locationOperationSubscription = _locationOperationCubit.stream.listen(
+      _locationOperationStateListener,
     );
-    _setLocationCubit.getLocationData();
     _locationFetchingSubscription = _locationFetchingCubit.stream.listen(
       _locationFetchingStateListener,
     );
+
+    _locationOperationCubit.getLocationData();
   }
 
   @override
   void dispose() {
     _loadingCubit.close();
-    _setLocationCubit.close();
+    _locationOperationCubit.close();
     _locationFetchingCubit.close();
-    _mapController?.dispose();
-    _setLocationSubscription.cancel();
+
+    _locationOperationSubscription.cancel();
     _locationFetchingSubscription.cancel();
+
+    _mapController?.dispose();
+
     super.dispose();
   }
 
@@ -100,7 +106,12 @@ class _SetLocationPageState extends State<SetLocationPage> {
   }
 
   Widget _buildBody() {
-    return SafeArea(child: _buildMap());
+    return SafeArea(
+      child: BlocBuilder<LocationOperationCubit, LocationOperationState>(
+        bloc: _locationOperationCubit,
+        builder: (context, state) => _buildMap(),
+      ),
+    );
   }
 
   Widget _buildSaveLocationButton() {
@@ -115,7 +126,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
           await showSingleInputBottomSheet(
             context,
             onPressSave: (name) {
-              _setLocationCubit.saveLocationData(
+              _locationOperationCubit.saveLocationData(
                 locationData: currentLocation.value,
                 locationName: name,
                 currentActiveLocationId: _currentActiveLocation?.id,
@@ -154,13 +165,8 @@ class _SetLocationPageState extends State<SetLocationPage> {
     );
   }
 
-  void _setLocationStateListener(SetLocationState state) {
-    state.map(
-      initial: (_) {},
-      inProgress: (_) {
-        _loadingCubit.startLoading();
-        DialogUtils.showLoadingDialog(context: context);
-      },
+  void _locationOperationStateListener(LocationOperationState state) {
+    state.maybeMap(
       failure: (s) {
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
@@ -171,11 +177,11 @@ class _SetLocationPageState extends State<SetLocationPage> {
         );
       },
       fetchLocationData: (s) {
-        _loadingCubit.completeLoading();
-        DialogUtils.hideDialog(context);
         _currentActiveLocation = s.locationData;
         final latLng = LatLng(s.locationData.lat, s.locationData.lng);
         _setCurrentLocation(latLng);
+        DialogUtils.hideDialog(context);
+        _loadingCubit.completeLoading();
       },
       saveLocationSuccess: (_) {
         _loadingCubit.completeLoading();
@@ -185,6 +191,10 @@ class _SetLocationPageState extends State<SetLocationPage> {
           title: "Success",
           message: "Check in point saved successfully",
         );
+      },
+      orElse: () {
+        _loadingCubit.startLoading();
+        DialogUtils.showLoadingDialog(context: context);
       },
     );
   }
@@ -215,7 +225,7 @@ class _SetLocationPageState extends State<SetLocationPage> {
 
   void _setCurrentLocation(LatLng latLng) {
     currentLocation.value = latLng;
-    _setMapCameraPosition(latLng);
+    _setMapCameraPosition(currentLocation.value);
   }
 
   void _setMapCameraPosition(LatLng latLng) {
