@@ -1,5 +1,6 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.config.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:location/location.dart';
@@ -10,6 +11,9 @@ final GetIt getIt = GetIt.instance;
 abstract class RegisterModule {
   @lazySingleton
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
+
+  @lazySingleton
+  FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
 
   @lazySingleton
   Location get location => Location();

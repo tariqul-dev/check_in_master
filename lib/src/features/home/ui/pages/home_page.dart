@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
-  static const path = '/home';
+  static const path = '/HomePage';
 
   static Route<dynamic> route() {
     return MaterialPageRoute(

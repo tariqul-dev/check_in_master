@@ -1,7 +1,6 @@
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
-import 'package:check_in_master/src/core/errors/exceptions/no_data_found_exception.dart';
-import 'package:check_in_master/src/core/errors/failures/base_failure.dart';
-import 'package:check_in_master/src/core/errors/failures/no_data_found_failure.dart';
+import 'package:check_in_master/src/core/errors/exceptions/exceptions.dart';
+import 'package:check_in_master/src/core/errors/failures/failures.dart';
 import 'package:check_in_master/src/core/models/location_data_model.dart';
 import 'package:check_in_master/src/core/usecases/typedefs.dart';
 import 'package:dartz/dartz.dart';
@@ -9,11 +8,11 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/location_management_repository.dart';
-import '../datasources/remote/remote_datasource.dart';
+import '../datasources/remote/location_remote_datasource.dart';
 
 @Injectable(as: LocationManagementRepository)
 class LocationManagementRepositoryImpl implements LocationManagementRepository {
-  final RemoteDataSource remoteDataSource;
+  final LocationRemoteDataSource remoteDataSource;
 
   LocationManagementRepositoryImpl({required this.remoteDataSource});
 
@@ -25,6 +24,8 @@ class LocationManagementRepositoryImpl implements LocationManagementRepository {
       return Left(locationDataModel.toEntity());
     } on NoDataFoundException catch (e) {
       return Right(NoDataFoundFailure(e.toString()));
+    } catch (e) {
+      return Right(UnknownFailure(e.toString()));
     }
   }
 
@@ -35,12 +36,14 @@ class LocationManagementRepositoryImpl implements LocationManagementRepository {
   }) async {
     try {
       final savedData = await remoteDataSource.saveLocationData(
-        LocationDataModel.fromEntity(locationData),
-        currentActiveLocationId,
+        locationDataModel: LocationDataModel.fromEntity(locationData),
+        currentActiveLocationId: currentActiveLocationId,
       );
       return Left(savedData.toEntity());
+    } on CreatingLocationException catch (e) {
+      return Right(CreatingLocationFailure(e.message));
     } catch (e) {
-      return Right(BaseFailure(e.toString()));
+      return Right(UnknownFailure(e.toString()));
     }
   }
 
@@ -57,9 +60,11 @@ class LocationManagementRepositoryImpl implements LocationManagementRepository {
       if (updatedLocationId == locationDataEntity.id) {
         return Left(locationDataEntity);
       }
-      return Right(BaseFailure('Location activation failed'));
+      throw UpdateLocationException('Location activation failed');
+    } on UpdateLocationException catch (e) {
+      return Right(UpdateLocationFailure(e.message));
     } catch (e) {
-      return Right(BaseFailure(e.toString()));
+      return Right(UnknownFailure(e.toString()));
     }
   }
 
@@ -69,8 +74,10 @@ class LocationManagementRepositoryImpl implements LocationManagementRepository {
       final models = await remoteDataSource.getLocations();
       final entities = await compute(_mapAndSortLocations, models);
       return Left(entities);
+    } on NoDataFoundException catch (e) {
+      return Right(NoDataFoundFailure(e.message));
     } catch (e) {
-      return Right(BaseFailure(e.toString()));
+      return Right(UnknownFailure(e.toString()));
     }
   }
 

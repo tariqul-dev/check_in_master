@@ -6,13 +6,12 @@ import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.da
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
-import 'package:check_in_master/src/features/location_management/ui/cubits/location_operation/location_operation_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../bottom_sheets/show_saved_locations_bottom_sheet.dart';
 import '../cubits/location_fetching/location_fetching_cubit.dart';
+import '../cubits/location_operation/location_operation_cubit.dart';
 
 class LocationManagementPage extends StatefulWidget {
   static const String path = '/LocationManagementPage';
@@ -106,12 +105,7 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
   }
 
   Widget _buildBody() {
-    return SafeArea(
-      child: BlocBuilder<LocationOperationCubit, LocationOperationState>(
-        bloc: _locationOperationCubit,
-        builder: (context, state) => _buildMap(),
-      ),
-    );
+    return SafeArea(child: _buildMap());
   }
 
   Widget _buildSaveLocationButton() {

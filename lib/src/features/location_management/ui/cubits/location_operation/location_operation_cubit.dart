@@ -8,9 +8,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-part 'location_operation_state.dart';
-
 part 'location_operation_cubit.freezed.dart';
+part 'location_operation_state.dart';
 
 @Injectable()
 class LocationOperationCubit extends Cubit<LocationOperationState> {

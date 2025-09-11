@@ -1,18 +1,35 @@
-import 'package:check_in_master/src/core/errors/exceptions/no_data_found_exception.dart';
+import 'package:check_in_master/src/core/errors/exceptions/exceptions.dart';
 import 'package:check_in_master/src/core/models/location_data_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
-@lazySingleton
-class RemoteDataSource {
+abstract class LocationRemoteDataSource {
+  Future<LocationDataModel> saveLocationData({
+    required LocationDataModel locationDataModel,
+    required String? currentActiveLocationId,
+  });
+
+  Future<String> updateActiveLocation({
+    required String currentActiveLocationId,
+    required String updatableLocationId,
+  });
+
+  Future<LocationDataModel> getActiveLocationData();
+
+  Future<List<LocationDataModel>> getLocations();
+}
+
+@Injectable(as: LocationRemoteDataSource)
+class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   final FirebaseFirestore firestore;
 
-  RemoteDataSource(this.firestore);
+  LocationRemoteDataSourceImpl(this.firestore);
 
-  Future<LocationDataModel> saveLocationData(
-    LocationDataModel locationDataModel,
-    String? currentActiveLocationId,
-  ) async {
+  @override
+  Future<LocationDataModel> saveLocationData({
+    required LocationDataModel locationDataModel,
+    required String? currentActiveLocationId,
+  }) async {
     if (currentActiveLocationId != null) {
       await _updateLocationActivationById(
         id: currentActiveLocationId,
@@ -27,12 +44,13 @@ class RemoteDataSource {
     final data = snapshot.data();
 
     if (data == null) {
-      throw Exception("Failed to save location");
+      throw CreatingLocationException("Failed to save location");
     }
 
     return LocationDataModel.fromFirestore(docRef.id, data);
   }
 
+  @override
   Future<String> updateActiveLocation({
     required String currentActiveLocationId,
     required String updatableLocationId,
@@ -47,15 +65,7 @@ class RemoteDataSource {
     );
   }
 
-  Future<String> _updateLocationActivationById({
-    required String id,
-    required bool active,
-  }) async {
-    await firestore.collection('locations').doc(id).update({'active': active});
-
-    return id;
-  }
-
+  @override
   Future<LocationDataModel> getActiveLocationData() async {
     final querySnapshot = await firestore
         .collection('locations')
@@ -66,10 +76,11 @@ class RemoteDataSource {
       final doc = querySnapshot.docs.first;
       return LocationDataModel.fromFirestore(doc.id, doc.data());
     } else {
-      throw NoDataFoundException(message: 'No data found');
+      throw NoDataFoundException('No data found');
     }
   }
 
+  @override
   Future<List<LocationDataModel>> getLocations() async {
     final querySnapshot = await firestore.collection('locations').get();
 
@@ -79,7 +90,16 @@ class RemoteDataSource {
           .toList();
       return locationList;
     } else {
-      throw NoDataFoundException(message: 'No data found');
+      throw NoDataFoundException('No data found');
     }
+  }
+
+  Future<String> _updateLocationActivationById({
+    required String id,
+    required bool active,
+  }) async {
+    await firestore.collection('locations').doc(id).update({'active': active});
+
+    return id;
   }
 }

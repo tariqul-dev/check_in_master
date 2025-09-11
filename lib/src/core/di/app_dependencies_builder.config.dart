@@ -15,6 +15,20 @@ import 'package:check_in_master/src/core/di/app_dependencies_builder.dart'
     as _i205;
 import 'package:check_in_master/src/core/usecases/get_active_location_data.dart'
     as _i451;
+import 'package:check_in_master/src/features/auth/data/datasources/remote_datasource/auth_remote_datasource.dart'
+    as _i181;
+import 'package:check_in_master/src/features/auth/data/repositories/auth_repository_impl.dart'
+    as _i313;
+import 'package:check_in_master/src/features/auth/domain/repositories/auth_repository.dart'
+    as _i409;
+import 'package:check_in_master/src/features/auth/domain/usecases/get_current_user.dart'
+    as _i329;
+import 'package:check_in_master/src/features/auth/domain/usecases/login_with_email_password.dart'
+    as _i133;
+import 'package:check_in_master/src/features/auth/domain/usecases/logout.dart'
+    as _i723;
+import 'package:check_in_master/src/features/auth/domain/usecases/register_with_email_password.dart'
+    as _i464;
 import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart'
     as _i483;
 import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart'
@@ -35,8 +49,8 @@ import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_i
     as _i1016;
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart'
     as _i1062;
-import 'package:check_in_master/src/features/location_management/data/datasources/remote/remote_datasource.dart'
-    as _i842;
+import 'package:check_in_master/src/features/location_management/data/datasources/remote/location_remote_datasource.dart'
+    as _i236;
 import 'package:check_in_master/src/features/location_management/data/repositories/location_management_repository_impl.dart'
     as _i1036;
 import 'package:check_in_master/src/features/location_management/domain/repositories/location_management_repository.dart'
@@ -52,6 +66,7 @@ import 'package:check_in_master/src/features/location_management/ui/cubits/locat
 import 'package:check_in_master/src/features/location_management/ui/cubits/location_operation/location_operation_cubit.dart'
     as _i707;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
+import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:location/location.dart' as _i645;
@@ -66,19 +81,46 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModule = _$RegisterModule();
     gh.factory<_i100.LoadingHudCubit>(() => _i100.LoadingHudCubit());
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
+    gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i645.Location>(() => registerModule.location);
-    gh.lazySingleton<_i842.RemoteDataSource>(
-      () => _i842.RemoteDataSource(gh<_i974.FirebaseFirestore>()),
-    );
     gh.factory<_i483.EligibilityChecker>(
       () => _i483.EligibilityChecker(location: gh<_i645.Location>()),
     );
     gh.factory<_i599.HandlePermission>(
       () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
+    gh.factory<_i236.LocationRemoteDataSource>(
+      () => _i236.LocationRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.factory<_i181.AuthRemoteDataSource>(
+      () => _i181.AuthRemoteDataSourceImpl(
+        auth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+      ),
+    );
+    gh.factory<_i409.AuthRepository>(
+      () => _i313.AuthRepositoryImpl(
+        authRemoteDataSource: gh<_i181.AuthRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i329.GetCurrentUser>(
+      () => _i329.GetCurrentUser(repository: gh<_i409.AuthRepository>()),
+    );
+    gh.factory<_i464.RegisterWithEmailPassword>(
+      () => _i464.RegisterWithEmailPassword(
+        repository: gh<_i409.AuthRepository>(),
+      ),
+    );
+    gh.factory<_i133.LoginWithEmailPassword>(
+      () =>
+          _i133.LoginWithEmailPassword(repository: gh<_i409.AuthRepository>()),
+    );
+    gh.factory<_i723.Logout>(
+      () => _i723.Logout(repository: gh<_i409.AuthRepository>()),
+    );
     gh.factory<_i732.LocationManagementRepository>(
       () => _i1036.LocationManagementRepositoryImpl(
-        remoteDataSource: gh<_i842.RemoteDataSource>(),
+        remoteDataSource: gh<_i236.LocationRemoteDataSource>(),
       ),
     );
     gh.factory<_i260.UpdateLocationActiveStatusById>(

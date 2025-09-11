@@ -1,14 +1,11 @@
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
-import 'package:check_in_master/src/core/errors/failures/base_failure.dart';
+import 'package:check_in_master/src/core/errors/failures/failures.dart';
 import 'package:check_in_master/src/core/models/location_data_model.dart';
 import 'package:check_in_master/src/core/usecases/typedefs.dart';
 import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart';
 import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart';
-
 import 'package:check_in_master/src/features/home/domain/entities/check_in_entity.dart';
-
 import 'package:check_in_master/src/features/home/domain/entities/check_out_entity.dart';
-
 import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -43,7 +40,7 @@ class HomeRepositoryImpl implements HomeRepository {
       final Status permissionStatus = await handlePermission.checkPermission();
       return Left(permissionStatus);
     } catch (e) {
-      return Right(BaseFailure(e.toString()));
+      return Right(UnknownFailure(e.toString()));
     }
   }
 
@@ -62,7 +59,7 @@ class HomeRepositoryImpl implements HomeRepository {
       }
       return Left(isEligible);
     } catch (e) {
-      return Right(BaseFailure(e.toString()));
+      return Right(UnknownFailure(e.toString()));
     }
   }
 }

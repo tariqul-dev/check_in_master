@@ -5,9 +5,8 @@ import 'package:check_in_master/src/features/location_management/domain/usecases
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'location_fetching_state.dart';
-
 part 'location_fetching_cubit.freezed.dart';
+part 'location_fetching_state.dart';
 
 @injectable
 class LocationFetchingCubit extends Cubit<LocationFetchingState> {
