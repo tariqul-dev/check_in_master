@@ -1,3 +1,9 @@
+import 'dart:async';
+
+import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
+import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart';
+import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -16,7 +22,8 @@ class AuthPage extends StatefulWidget {
   State<AuthPage> createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin {
+class _AuthPageState extends State<AuthPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   final _loginFormKey = GlobalKey<FormState>();
@@ -31,10 +38,17 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   final _registerEmailController = TextEditingController();
   final _registerPasswordController = TextEditingController();
 
+  late final AuthCubit _authCubit;
+  late final StreamSubscription<AuthState> _authStateStreamSubscription;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _authCubit = getIt<AuthCubit>();
+    _authStateStreamSubscription = _authCubit.stream.listen(
+      _authStateStreamSubscriptionListener,
+    );
   }
 
   @override
@@ -45,23 +59,25 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
     _registerNameController.dispose();
     _registerEmailController.dispose();
     _registerPasswordController.dispose();
+    _authCubit.close();
     super.dispose();
   }
 
   void _login() {
     if (_loginFormKey.currentState!.validate()) {
-      // TODO: Implement login logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logging in...')),
+      _authCubit.login(
+        email: _loginEmailController.text.trim(),
+        password: _loginPasswordController.text.trim(),
       );
     }
   }
 
   void _register() {
     if (_registerFormKey.currentState!.validate()) {
-      // TODO: Implement registration logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registering...')),
+      _authCubit.register(
+        name: _registerNameController.text.trim(),
+        email: _registerEmailController.text.trim(),
+        password: _registerPasswordController.text.trim(),
       );
     }
   }
@@ -83,10 +99,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
       body: SafeArea(
         child: TabBarView(
           controller: _tabController,
-          children: [
-            _buildLoginForm(),
-            _buildRegisterForm(),
-          ],
+          children: [_buildLoginForm(), _buildRegisterForm()],
         ),
       ),
     );
@@ -105,8 +118,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
                 labelText: "Email",
                 prefixIcon: Icon(Icons.email),
               ),
-              validator: (value) =>
-              value!.isEmpty ? "Enter your email" : null,
+              validator: (value) => value!.isEmpty ? "Enter your email" : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -117,13 +129,10 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
               ),
               obscureText: true,
               validator: (value) =>
-              value!.isEmpty ? "Enter your password" : null,
+                  value!.isEmpty ? "Enter your password" : null,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text("Login"),
-            ),
+            ElevatedButton(onPressed: _login, child: const Text("Login")),
           ],
         ),
       ),
@@ -143,8 +152,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
                 labelText: "Name",
                 prefixIcon: Icon(Icons.person),
               ),
-              validator: (value) =>
-              value!.isEmpty ? "Enter your name" : null,
+              validator: (value) => value!.isEmpty ? "Enter your name" : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -153,8 +161,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
                 labelText: "Email",
                 prefixIcon: Icon(Icons.email),
               ),
-              validator: (value) =>
-              value!.isEmpty ? "Enter your email" : null,
+              validator: (value) => value!.isEmpty ? "Enter your email" : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -165,16 +172,37 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
               ),
               obscureText: true,
               validator: (value) =>
-              value!.isEmpty ? "Enter your password" : null,
+                  value!.isEmpty ? "Enter your password" : null,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: const Text("Register"),
-            ),
+            ElevatedButton(onPressed: _register, child: const Text("Register")),
           ],
         ),
       ),
+    );
+  }
+
+  void _authStateStreamSubscriptionListener(AuthState state) {
+    state.maybeWhen(
+      inProgress: () {
+        DialogUtils.showLoadingDialog(context: context);
+      },
+
+      failure: (message) {
+        DialogUtils.hideDialog(context);
+        DialogUtils.showMessageDialog(
+          context: context,
+          title: 'Error',
+          message: message,
+        );
+      },
+      success: (userEntity) {
+        DialogUtils.hideDialog(context);
+        Navigator.of(
+          context,
+        ).pushAndRemoveUntil(HomePage.route(), (route) => false);
+      },
+      orElse: () {},
     );
   }
 }

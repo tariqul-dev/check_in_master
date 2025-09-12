@@ -86,7 +86,7 @@ extension FailurePatterns on Failure {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthFailure value)?  auth,TResult Function( LocationFailure value)?  location,TResult Function( CreatingLocationFailure value)?  creatingLocation,TResult Function( UpdateLocationFailure value)?  updateLocation,TResult Function( NoDataFoundFailure value)?  noDataFound,TResult Function( PermissionFailure value)?  permission,TResult Function( UnknownFailure value)?  unknown,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthFailure value)?  auth,TResult Function( LocationFailure value)?  location,TResult Function( CreatingLocationFailure value)?  creatingLocation,TResult Function( UpdateLocationFailure value)?  updateLocation,TResult Function( NoDataFoundFailure value)?  noDataFound,TResult Function( UserNotFoundFailure value)?  userNotFound,TResult Function( PermissionFailure value)?  permission,TResult Function( UnknownFailure value)?  unknown,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthFailure() when auth != null:
@@ -94,7 +94,8 @@ return auth(_that);case LocationFailure() when location != null:
 return location(_that);case CreatingLocationFailure() when creatingLocation != null:
 return creatingLocation(_that);case UpdateLocationFailure() when updateLocation != null:
 return updateLocation(_that);case NoDataFoundFailure() when noDataFound != null:
-return noDataFound(_that);case PermissionFailure() when permission != null:
+return noDataFound(_that);case UserNotFoundFailure() when userNotFound != null:
+return userNotFound(_that);case PermissionFailure() when permission != null:
 return permission(_that);case UnknownFailure() when unknown != null:
 return unknown(_that);case _:
   return orElse();
@@ -114,7 +115,7 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthFailure value)  auth,required TResult Function( LocationFailure value)  location,required TResult Function( CreatingLocationFailure value)  creatingLocation,required TResult Function( UpdateLocationFailure value)  updateLocation,required TResult Function( NoDataFoundFailure value)  noDataFound,required TResult Function( PermissionFailure value)  permission,required TResult Function( UnknownFailure value)  unknown,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthFailure value)  auth,required TResult Function( LocationFailure value)  location,required TResult Function( CreatingLocationFailure value)  creatingLocation,required TResult Function( UpdateLocationFailure value)  updateLocation,required TResult Function( NoDataFoundFailure value)  noDataFound,required TResult Function( UserNotFoundFailure value)  userNotFound,required TResult Function( PermissionFailure value)  permission,required TResult Function( UnknownFailure value)  unknown,}){
 final _that = this;
 switch (_that) {
 case AuthFailure():
@@ -122,7 +123,8 @@ return auth(_that);case LocationFailure():
 return location(_that);case CreatingLocationFailure():
 return creatingLocation(_that);case UpdateLocationFailure():
 return updateLocation(_that);case NoDataFoundFailure():
-return noDataFound(_that);case PermissionFailure():
+return noDataFound(_that);case UserNotFoundFailure():
+return userNotFound(_that);case PermissionFailure():
 return permission(_that);case UnknownFailure():
 return unknown(_that);}
 }
@@ -138,7 +140,7 @@ return unknown(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthFailure value)?  auth,TResult? Function( LocationFailure value)?  location,TResult? Function( CreatingLocationFailure value)?  creatingLocation,TResult? Function( UpdateLocationFailure value)?  updateLocation,TResult? Function( NoDataFoundFailure value)?  noDataFound,TResult? Function( PermissionFailure value)?  permission,TResult? Function( UnknownFailure value)?  unknown,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthFailure value)?  auth,TResult? Function( LocationFailure value)?  location,TResult? Function( CreatingLocationFailure value)?  creatingLocation,TResult? Function( UpdateLocationFailure value)?  updateLocation,TResult? Function( NoDataFoundFailure value)?  noDataFound,TResult? Function( UserNotFoundFailure value)?  userNotFound,TResult? Function( PermissionFailure value)?  permission,TResult? Function( UnknownFailure value)?  unknown,}){
 final _that = this;
 switch (_that) {
 case AuthFailure() when auth != null:
@@ -146,7 +148,8 @@ return auth(_that);case LocationFailure() when location != null:
 return location(_that);case CreatingLocationFailure() when creatingLocation != null:
 return creatingLocation(_that);case UpdateLocationFailure() when updateLocation != null:
 return updateLocation(_that);case NoDataFoundFailure() when noDataFound != null:
-return noDataFound(_that);case PermissionFailure() when permission != null:
+return noDataFound(_that);case UserNotFoundFailure() when userNotFound != null:
+return userNotFound(_that);case PermissionFailure() when permission != null:
 return permission(_that);case UnknownFailure() when unknown != null:
 return unknown(_that);case _:
   return null;
@@ -165,14 +168,15 @@ return unknown(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  auth,TResult Function( String message)?  location,TResult Function( String message)?  creatingLocation,TResult Function( String message)?  updateLocation,TResult Function( String message)?  noDataFound,TResult Function( String message)?  permission,TResult Function( String message)?  unknown,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  auth,TResult Function( String message)?  location,TResult Function( String message)?  creatingLocation,TResult Function( String message)?  updateLocation,TResult Function( String message)?  noDataFound,TResult Function( String message)?  userNotFound,TResult Function( String message)?  permission,TResult Function( String message)?  unknown,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthFailure() when auth != null:
 return auth(_that.message);case LocationFailure() when location != null:
 return location(_that.message);case CreatingLocationFailure() when creatingLocation != null:
 return creatingLocation(_that.message);case UpdateLocationFailure() when updateLocation != null:
 return updateLocation(_that.message);case NoDataFoundFailure() when noDataFound != null:
-return noDataFound(_that.message);case PermissionFailure() when permission != null:
+return noDataFound(_that.message);case UserNotFoundFailure() when userNotFound != null:
+return userNotFound(_that.message);case PermissionFailure() when permission != null:
 return permission(_that.message);case UnknownFailure() when unknown != null:
 return unknown(_that.message);case _:
   return orElse();
@@ -192,14 +196,15 @@ return unknown(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  auth,required TResult Function( String message)  location,required TResult Function( String message)  creatingLocation,required TResult Function( String message)  updateLocation,required TResult Function( String message)  noDataFound,required TResult Function( String message)  permission,required TResult Function( String message)  unknown,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  auth,required TResult Function( String message)  location,required TResult Function( String message)  creatingLocation,required TResult Function( String message)  updateLocation,required TResult Function( String message)  noDataFound,required TResult Function( String message)  userNotFound,required TResult Function( String message)  permission,required TResult Function( String message)  unknown,}) {final _that = this;
 switch (_that) {
 case AuthFailure():
 return auth(_that.message);case LocationFailure():
 return location(_that.message);case CreatingLocationFailure():
 return creatingLocation(_that.message);case UpdateLocationFailure():
 return updateLocation(_that.message);case NoDataFoundFailure():
-return noDataFound(_that.message);case PermissionFailure():
+return noDataFound(_that.message);case UserNotFoundFailure():
+return userNotFound(_that.message);case PermissionFailure():
 return permission(_that.message);case UnknownFailure():
 return unknown(_that.message);}
 }
@@ -215,14 +220,15 @@ return unknown(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  auth,TResult? Function( String message)?  location,TResult? Function( String message)?  creatingLocation,TResult? Function( String message)?  updateLocation,TResult? Function( String message)?  noDataFound,TResult? Function( String message)?  permission,TResult? Function( String message)?  unknown,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  auth,TResult? Function( String message)?  location,TResult? Function( String message)?  creatingLocation,TResult? Function( String message)?  updateLocation,TResult? Function( String message)?  noDataFound,TResult? Function( String message)?  userNotFound,TResult? Function( String message)?  permission,TResult? Function( String message)?  unknown,}) {final _that = this;
 switch (_that) {
 case AuthFailure() when auth != null:
 return auth(_that.message);case LocationFailure() when location != null:
 return location(_that.message);case CreatingLocationFailure() when creatingLocation != null:
 return creatingLocation(_that.message);case UpdateLocationFailure() when updateLocation != null:
 return updateLocation(_that.message);case NoDataFoundFailure() when noDataFound != null:
-return noDataFound(_that.message);case PermissionFailure() when permission != null:
+return noDataFound(_that.message);case UserNotFoundFailure() when userNotFound != null:
+return userNotFound(_that.message);case PermissionFailure() when permission != null:
 return permission(_that.message);case UnknownFailure() when unknown != null:
 return unknown(_that.message);case _:
   return null;
@@ -554,6 +560,72 @@ class _$NoDataFoundFailureCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(NoDataFoundFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UserNotFoundFailure implements Failure {
+  const UserNotFoundFailure(this.message);
+  
+
+@override final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UserNotFoundFailureCopyWith<UserNotFoundFailure> get copyWith => _$UserNotFoundFailureCopyWithImpl<UserNotFoundFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNotFoundFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.userNotFound(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UserNotFoundFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $UserNotFoundFailureCopyWith(UserNotFoundFailure value, $Res Function(UserNotFoundFailure) _then) = _$UserNotFoundFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$UserNotFoundFailureCopyWithImpl<$Res>
+    implements $UserNotFoundFailureCopyWith<$Res> {
+  _$UserNotFoundFailureCopyWithImpl(this._self, this._then);
+
+  final UserNotFoundFailure _self;
+  final $Res Function(UserNotFoundFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(UserNotFoundFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

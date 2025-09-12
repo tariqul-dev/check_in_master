@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../models/login_input_model.dart';
 import '../../models/register_input_model.dart';
-import '../../models/user_model.dart';
+import '../../../../../core/models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> register(RegisterInputModel input);
@@ -13,7 +13,7 @@ abstract class AuthRemoteDataSource {
 
   Future<UserModel?> getCurrentUser();
 
-  Future<void> logout();
+  Future<bool> logout();
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -81,7 +81,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> logout() async {
+  Future<bool> logout() async {
     await auth.signOut();
+    return true;
   }
 }

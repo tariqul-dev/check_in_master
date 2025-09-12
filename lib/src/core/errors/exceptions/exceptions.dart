@@ -14,6 +14,8 @@ sealed class Exceptions with _$Exceptions implements Exception {
   const factory Exceptions.updateLocation(String message) =
       UpdateLocationException;
 
+  const factory Exceptions.userNotFound(String message) = UserNotFoundException;
+
   const factory Exceptions.noDataFound(String message) = NoDataFoundException;
 
   const factory Exceptions.permission(String message) = PermissionException;

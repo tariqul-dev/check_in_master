@@ -1,7 +1,8 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
-import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
+import 'package:check_in_master/src/features/splash_screen/ui/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -19,8 +20,9 @@ class CheckInMasterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Check In Master",
-      home: AuthPage(),
+      home: SplashScreen(),
     );
   }
 }

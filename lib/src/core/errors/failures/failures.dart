@@ -15,6 +15,8 @@ sealed class Failure with _$Failure {
 
   const factory Failure.noDataFound(String message) = NoDataFoundFailure;
 
+  const factory Failure.userNotFound(String message) = UserNotFoundFailure;
+
   const factory Failure.permission(String message) = PermissionFailure;
 
   const factory Failure.unknown(String message) = UnknownFailure;

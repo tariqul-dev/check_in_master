@@ -15,20 +15,21 @@ import 'package:check_in_master/src/core/di/app_dependencies_builder.dart'
     as _i205;
 import 'package:check_in_master/src/core/usecases/get_active_location_data.dart'
     as _i451;
+import 'package:check_in_master/src/core/usecases/get_current_user.dart'
+    as _i838;
+import 'package:check_in_master/src/core/usecases/logout.dart' as _i644;
 import 'package:check_in_master/src/features/auth/data/datasources/remote_datasource/auth_remote_datasource.dart'
     as _i181;
 import 'package:check_in_master/src/features/auth/data/repositories/auth_repository_impl.dart'
     as _i313;
 import 'package:check_in_master/src/features/auth/domain/repositories/auth_repository.dart'
     as _i409;
-import 'package:check_in_master/src/features/auth/domain/usecases/get_current_user.dart'
-    as _i329;
 import 'package:check_in_master/src/features/auth/domain/usecases/login_with_email_password.dart'
     as _i133;
-import 'package:check_in_master/src/features/auth/domain/usecases/logout.dart'
-    as _i723;
 import 'package:check_in_master/src/features/auth/domain/usecases/register_with_email_password.dart'
     as _i464;
+import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart'
+    as _i526;
 import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart'
     as _i483;
 import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart'
@@ -65,6 +66,8 @@ import 'package:check_in_master/src/features/location_management/ui/cubits/locat
     as _i175;
 import 'package:check_in_master/src/features/location_management/ui/cubits/location_operation/location_operation_cubit.dart'
     as _i707;
+import 'package:check_in_master/src/features/splash_screen/ui/cubits/splash_cubit.dart'
+    as _i341;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
@@ -103,9 +106,6 @@ extension GetItInjectableX on _i174.GetIt {
         authRemoteDataSource: gh<_i181.AuthRemoteDataSource>(),
       ),
     );
-    gh.factory<_i329.GetCurrentUser>(
-      () => _i329.GetCurrentUser(repository: gh<_i409.AuthRepository>()),
-    );
     gh.factory<_i464.RegisterWithEmailPassword>(
       () => _i464.RegisterWithEmailPassword(
         repository: gh<_i409.AuthRepository>(),
@@ -115,8 +115,19 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i133.LoginWithEmailPassword(repository: gh<_i409.AuthRepository>()),
     );
-    gh.factory<_i723.Logout>(
-      () => _i723.Logout(repository: gh<_i409.AuthRepository>()),
+    gh.factory<_i838.GetCurrentUser>(
+      () => _i838.GetCurrentUser(repository: gh<_i409.AuthRepository>()),
+    );
+    gh.factory<_i644.Logout>(
+      () => _i644.Logout(repository: gh<_i409.AuthRepository>()),
+    );
+    gh.factory<_i526.AuthCubit>(
+      () => _i526.AuthCubit(
+        gh<_i838.GetCurrentUser>(),
+        gh<_i133.LoginWithEmailPassword>(),
+        gh<_i464.RegisterWithEmailPassword>(),
+        gh<_i644.Logout>(),
+      ),
     );
     gh.factory<_i732.LocationManagementRepository>(
       () => _i1036.LocationManagementRepositoryImpl(
@@ -148,6 +159,9 @@ extension GetItInjectableX on _i174.GetIt {
         handlePermission: gh<_i599.HandlePermission>(),
         eligibilityChecker: gh<_i483.EligibilityChecker>(),
       ),
+    );
+    gh.factory<_i341.SplashCubit>(
+      () => _i341.SplashCubit(gh<_i838.GetCurrentUser>()),
     );
     gh.factory<_i261.DoCheckIn>(
       () => _i261.DoCheckIn(repository: gh<_i677.HomeRepository>()),

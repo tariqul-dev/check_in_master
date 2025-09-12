@@ -3,7 +3,7 @@ import 'package:check_in_master/src/core/usecases/typedefs.dart';
 import 'package:check_in_master/src/core/usecases/usecase.dart';
 import 'package:injectable/injectable.dart';
 
-import '../repositories/auth_repository.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
 
 @Injectable()
 class Logout implements BaseUseCase<NoParams, bool> {
