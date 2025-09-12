@@ -9,11 +9,11 @@ class EligibilityChecker {
 
   EligibilityChecker({required this.location});
 
-  Future<bool> checkEligibility(LocationDataModel locationDataModel) async {
+  Future<bool> checkEligibility(LocationDataModel activeLocation) async {
     final currentLocation = await _getCurrentLocation();
     final distance = calculateDistance(
-      locationDataModel.lat,
-      locationDataModel.lng,
+      activeLocation.lat,
+      activeLocation.lng,
       currentLocation.latitude ?? 9999999999,
       currentLocation.longitude ?? 9999999999,
     );

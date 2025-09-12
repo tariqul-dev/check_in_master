@@ -1,12 +1,15 @@
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
+import 'package:check_in_master/src/core/entities/user_entity.dart';
 import 'package:check_in_master/src/core/usecases/typedefs.dart';
-import 'package:check_in_master/src/features/home/domain/entities/check_in_entity.dart';
-import 'package:check_in_master/src/features/home/domain/entities/check_out_entity.dart';
 
 abstract class HomeRepository {
-  AsyncResult<bool> doCheckIn(CheckInEntity checkInEntity);
+  AsyncResult<UserEntity> doCheckIn({
+    required UserEntity user,
+    required LocationDataEntity activeLocation,
+  });
 
-  AsyncResult<bool> doCheckOut(CheckOutEntity checkOutEntity);
-
-  AsyncResult<bool> checkEligibility(LocationDataEntity locationDataEntity);
+  AsyncResult<UserEntity> doCheckOut({
+    required UserEntity user,
+    required LocationDataEntity activeLocation,
+  });
 }

@@ -1,5 +1,5 @@
-import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/di/containers/location_container.dart';
 import 'package:check_in_master/src/core/di/containers/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/user_entity.dart';
@@ -8,7 +8,6 @@ import 'package:check_in_master/src/features/location_management/ui/pages/locati
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubits/check_in_out/check_in_out_cubit.dart';
 import '../cubits/home_cubit.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,22 +28,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeCubit _homeCubit;
-  late final CheckInOutCubit _checkInOutCubit;
-  late final LoadingHudCubit _loadingCubit;
 
   late final UserContainer _userContainer;
+  late final LocationContainer _locationContainer;
 
   @override
   void initState() {
     super.initState();
 
     _homeCubit = getIt<HomeCubit>();
-    _checkInOutCubit = getIt<CheckInOutCubit>();
     _userContainer = getIt<UserContainer>();
-    _loadingCubit = LoadingHudCubit();
-  }
+    _locationContainer = getIt<LocationContainer>();
 
-  bool isCheckedIn = false;
+    _homeCubit.getCheckInStatus(user: _userContainer.currentUser);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,82 +54,65 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBody() {
     return SafeArea(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildCenter(),
-            const SizedBox(height: 20),
-            _buildCheckInButton(),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: BlocConsumer<HomeCubit, HomeState>(
+            bloc: _homeCubit,
+            listener: _homeStateListener,
+            builder: (context, state) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildCenter(state),
+                  const SizedBox(height: 20),
+                  _buildCheckInButton(state),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCenter() {
-    return BlocBuilder<HomeCubit, HomeState>(
-      bloc: _homeCubit,
-      builder: (context, state) {
-        return state.maybeMap(
-          loading: (_) => const CircularProgressIndicator(),
-          failure: (s) => Text('Error: ${s.message}'),
-          orElse: () => const Text('Welcome'),
-        );
+  Widget _buildCenter(HomeState state) {
+    return state.maybeWhen(
+      inProgress: () => const CircularProgressIndicator(),
+      failure: (s) => Text(s),
+      checkedIn: (user) {
+        return Text('Checked In');
       },
+      checkedOut: (user) {
+        return Text('Checked Out');
+      },
+      orElse: () => Text('Tap to check in'),
     );
   }
 
-  Widget _buildCheckInButton() {
-    return BlocConsumer<CheckInOutCubit, CheckInOutState>(
-      bloc: _checkInOutCubit,
-      listener: _checkInOutStateListener,
-      builder: (context, state) {
-        return OutlinedButton(
-          onPressed: () {
-            if (isCheckedIn) {
-              _checkInOutCubit.checkOut();
-              return;
-            }
-            _checkInOutCubit.checkIn();
-          },
-          child: state.maybeMap(
-            checkedIn: (_) => const Text('Check-Out'),
-            checkedOut: (_) => const Text('Check-In'),
-            orElse: () => const Text('Tap to check in'),
-          ),
+  Widget _buildCheckInButton(HomeState state) {
+    return OutlinedButton(
+      onPressed: () {
+        if (_userContainer.isCheckedIn) {
+          _homeCubit.performCheckOut(
+            user: _userContainer.currentUser,
+            activeLocation: _locationContainer.currentActiveLocation,
+          );
+          return;
+        }
+        _homeCubit.performCheckIn(
+          user: _userContainer.currentUser,
+          activeLocation: _locationContainer.currentActiveLocation,
         );
       },
-    );
-  }
-
-  void _checkInOutStateListener(BuildContext context, CheckInOutState state) {
-    state.map(
-      initial: (_) {},
-      loading: (_) {
-        _loadingCubit.startLoading();
-        DialogUtils.showLoadingDialog(context: context);
-      },
-      failure: (s) {
-        _loadingCubit.completeLoading();
-        DialogUtils.hideDialog(context);
-        DialogUtils.showMessageDialog(
-          context: context,
-          title: "Error",
-          message: s.message,
-        );
-      },
-      checkedIn: (_) {
-        _loadingCubit.completeLoading();
-        DialogUtils.hideDialog(context);
-        isCheckedIn = true;
-      },
-      checkedOut: (_) {
-        _loadingCubit.completeLoading();
-        DialogUtils.hideDialog(context);
-        isCheckedIn = false;
-      },
+      child: Text(
+        state.maybeMap(
+          checkedIn: (_) => 'Check-Out',
+          checkedOut: (_) => 'Check-In',
+          orElse: () => _userContainer.isCheckedIn ? 'Check-Out' : 'Check-In',
+        ),
+      ),
     );
   }
 
@@ -188,6 +168,31 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _homeStateListener(BuildContext context, HomeState state) {
+    state.maybeWhen(
+      inProgress: () {
+        DialogUtils.showLoadingDialog(context: context);
+      },
+      failure: (s) {
+        DialogUtils.hideDialog(context);
+        DialogUtils.showMessageDialog(
+          context: context,
+          title: "Error",
+          message: s,
+        );
+      },
+      checkedIn: (user) {
+        _userContainer.setUser(user);
+        DialogUtils.hideDialog(context);
+      },
+      checkedOut: (user) {
+        _userContainer.setUser(user);
+        DialogUtils.hideDialog(context);
+      },
+      orElse: () {},
     );
   }
 }

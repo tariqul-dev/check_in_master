@@ -26,4 +26,6 @@ class UserContainer {
   }
 
   bool get isLoggedIn => _currentUser != null;
+
+  bool get isCheckedIn => _currentUser?.isCheckedIn ?? false;
 }

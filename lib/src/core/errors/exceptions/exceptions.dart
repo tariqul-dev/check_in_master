@@ -21,4 +21,8 @@ sealed class Exceptions with _$Exceptions implements Exception {
   const factory Exceptions.permission(String message) = PermissionException;
 
   const factory Exceptions.unknown(String message) = UnknownException;
+
+  const factory Exceptions.checkIn(String message) = CheckInException;
+
+  const factory Exceptions.checkOut(String message) = CheckOutException;
 }

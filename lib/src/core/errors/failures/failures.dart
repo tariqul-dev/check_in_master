@@ -20,4 +20,8 @@ sealed class Failure with _$Failure {
   const factory Failure.permission(String message) = PermissionFailure;
 
   const factory Failure.unknown(String message) = UnknownFailure;
+
+  const factory Failure.checkIn(String message) = CheckInFailure;
+
+  const factory Failure.checkOut(String message) = CheckOutFailure;
 }

@@ -42,14 +42,10 @@ import 'package:check_in_master/src/features/home/data/repositories/home_reposit
     as _i980;
 import 'package:check_in_master/src/features/home/domain/repositories/home_repository.dart'
     as _i677;
-import 'package:check_in_master/src/features/home/domain/usecases/check_eligibility.dart'
-    as _i284;
 import 'package:check_in_master/src/features/home/domain/usecases/do_check_in.dart'
     as _i261;
 import 'package:check_in_master/src/features/home/domain/usecases/do_check_out.dart'
     as _i939;
-import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart'
-    as _i1016;
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart'
     as _i1062;
 import 'package:check_in_master/src/features/location_management/data/datasources/remote/location_remote_datasource.dart'
@@ -87,11 +83,11 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i100.LoadingHudCubit>(() => _i100.LoadingHudCubit());
+    gh.lazySingleton<_i797.UserContainer>(() => _i797.UserContainer());
+    gh.lazySingleton<_i866.LocationContainer>(() => _i866.LocationContainer());
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i645.Location>(() => registerModule.location);
-    gh.lazySingleton<_i797.UserContainer>(() => _i797.UserContainer());
-    gh.lazySingleton<_i866.LocationContainer>(() => _i866.LocationContainer());
     gh.factory<_i483.EligibilityChecker>(
       () => _i483.EligibilityChecker(location: gh<_i645.Location>()),
     );
@@ -133,8 +129,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i1030.CheckInOutRemoteDataSource>(
-      () =>
-          _i1030.CheckInOutRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i1030.CheckInOutRemoteDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i483.EligibilityChecker>(),
+      ),
     );
     gh.factory<_i732.LocationManagementRepository>(
       () => _i1036.LocationManagementRepositoryImpl(
@@ -161,13 +159,14 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i732.LocationManagementRepository>(),
       ),
     );
-    gh.factory<_i677.HomeRepository>(
-      () => _i980.HomeRepositoryImpl(
-        eligibilityChecker: gh<_i483.EligibilityChecker>(),
-      ),
-    );
     gh.factory<_i341.SplashCubit>(
       () => _i341.SplashCubit(gh<_i838.GetCurrentUser>()),
+    );
+    gh.factory<_i677.HomeRepository>(
+      () => _i980.HomeRepositoryImpl(
+        checkInOutRemoteDataSource: gh<_i1030.CheckInOutRemoteDataSource>(),
+        eligibilityChecker: gh<_i483.EligibilityChecker>(),
+      ),
     );
     gh.factory<_i970.ActiveLocationCubit>(
       () => _i970.ActiveLocationCubit(gh<_i451.GetActiveLocationData>()),
@@ -178,20 +177,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i939.DoCheckOut>(
       () => _i939.DoCheckOut(repository: gh<_i677.HomeRepository>()),
     );
-    gh.factory<_i284.CheckEligibility>(
-      () => _i284.CheckEligibility(repository: gh<_i677.HomeRepository>()),
-    );
     gh.factory<_i707.LocationOperationCubit>(
       () => _i707.LocationOperationCubit(
         gh<_i1042.SaveLocationData>(),
         gh<_i451.GetActiveLocationData>(),
         gh<_i260.UpdateLocationActiveStatusById>(),
-      ),
-    );
-    gh.factory<_i1016.CheckInOutCubit>(
-      () => _i1016.CheckInOutCubit(
-        gh<_i451.GetActiveLocationData>(),
-        gh<_i284.CheckEligibility>(),
       ),
     );
     gh.factory<_i175.LocationFetchingCubit>(

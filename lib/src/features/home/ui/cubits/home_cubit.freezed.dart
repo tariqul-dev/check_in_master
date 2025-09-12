@@ -55,13 +55,15 @@ extension HomeStatePatterns on HomeState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _InProgress value)?  inProgress,TResult Function( _Failure value)?  failure,TResult Function( _CheckedIn value)?  checkedIn,TResult Function( _CheckedOut value)?  checkedOut,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Failure() when failure != null:
-return failure(_that);case _:
+return initial(_that);case _InProgress() when inProgress != null:
+return inProgress(_that);case _Failure() when failure != null:
+return failure(_that);case _CheckedIn() when checkedIn != null:
+return checkedIn(_that);case _CheckedOut() when checkedOut != null:
+return checkedOut(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _InProgress value)  inProgress,required TResult Function( _Failure value)  failure,required TResult Function( _CheckedIn value)  checkedIn,required TResult Function( _CheckedOut value)  checkedOut,}){
 final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that);case _Loading():
-return loading(_that);case _Failure():
-return failure(_that);case _:
+return initial(_that);case _InProgress():
+return inProgress(_that);case _Failure():
+return failure(_that);case _CheckedIn():
+return checkedIn(_that);case _CheckedOut():
+return checkedOut(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +106,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _InProgress value)?  inProgress,TResult? Function( _Failure value)?  failure,TResult? Function( _CheckedIn value)?  checkedIn,TResult? Function( _CheckedOut value)?  checkedOut,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Failure() when failure != null:
-return failure(_that);case _:
+return initial(_that);case _InProgress() when inProgress != null:
+return inProgress(_that);case _Failure() when failure != null:
+return failure(_that);case _CheckedIn() when checkedIn != null:
+return checkedIn(_that);case _CheckedOut() when checkedOut != null:
+return checkedOut(_that);case _:
   return null;
 
 }
@@ -125,12 +131,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function( String message)?  failure,TResult Function( UserEntity user)?  checkedIn,TResult Function( UserEntity user)?  checkedOut,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Failure() when failure != null:
-return failure(_that.message);case _:
+return initial();case _InProgress() when inProgress != null:
+return inProgress();case _Failure() when failure != null:
+return failure(_that.message);case _CheckedIn() when checkedIn != null:
+return checkedIn(_that.user);case _CheckedOut() when checkedOut != null:
+return checkedOut(_that.user);case _:
   return orElse();
 
 }
@@ -148,12 +156,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function( String message)  failure,required TResult Function( UserEntity user)  checkedIn,required TResult Function( UserEntity user)  checkedOut,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial();case _Loading():
-return loading();case _Failure():
-return failure(_that.message);case _:
+return initial();case _InProgress():
+return inProgress();case _Failure():
+return failure(_that.message);case _CheckedIn():
+return checkedIn(_that.user);case _CheckedOut():
+return checkedOut(_that.user);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +180,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function( String message)?  failure,TResult? Function( UserEntity user)?  checkedIn,TResult? Function( UserEntity user)?  checkedOut,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Failure() when failure != null:
-return failure(_that.message);case _:
+return initial();case _InProgress() when inProgress != null:
+return inProgress();case _Failure() when failure != null:
+return failure(_that.message);case _CheckedIn() when checkedIn != null:
+return checkedIn(_that.user);case _CheckedOut() when checkedOut != null:
+return checkedOut(_that.user);case _:
   return null;
 
 }
@@ -218,8 +230,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements HomeState {
-  const _Loading();
+class _InProgress implements HomeState {
+  const _InProgress();
   
 
 
@@ -229,7 +241,7 @@ class _Loading implements HomeState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InProgress);
 }
 
 
@@ -238,7 +250,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'HomeState.loading()';
+  return 'HomeState.inProgress()';
 }
 
 
@@ -307,6 +319,138 @@ class __$FailureCopyWithImpl<$Res>
   return _then(_Failure(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _CheckedIn implements HomeState {
+  const _CheckedIn({required this.user});
+  
+
+ final  UserEntity user;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CheckedInCopyWith<_CheckedIn> get copyWith => __$CheckedInCopyWithImpl<_CheckedIn>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckedIn&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'HomeState.checkedIn(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CheckedInCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
+  factory _$CheckedInCopyWith(_CheckedIn value, $Res Function(_CheckedIn) _then) = __$CheckedInCopyWithImpl;
+@useResult
+$Res call({
+ UserEntity user
+});
+
+
+
+
+}
+/// @nodoc
+class __$CheckedInCopyWithImpl<$Res>
+    implements _$CheckedInCopyWith<$Res> {
+  __$CheckedInCopyWithImpl(this._self, this._then);
+
+  final _CheckedIn _self;
+  final $Res Function(_CheckedIn) _then;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_CheckedIn(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _CheckedOut implements HomeState {
+  const _CheckedOut({required this.user});
+  
+
+ final  UserEntity user;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CheckedOutCopyWith<_CheckedOut> get copyWith => __$CheckedOutCopyWithImpl<_CheckedOut>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckedOut&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'HomeState.checkedOut(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CheckedOutCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
+  factory _$CheckedOutCopyWith(_CheckedOut value, $Res Function(_CheckedOut) _then) = __$CheckedOutCopyWithImpl;
+@useResult
+$Res call({
+ UserEntity user
+});
+
+
+
+
+}
+/// @nodoc
+class __$CheckedOutCopyWithImpl<$Res>
+    implements _$CheckedOutCopyWith<$Res> {
+  __$CheckedOutCopyWithImpl(this._self, this._then);
+
+  final _CheckedOut _self;
+  final $Res Function(_CheckedOut) _then;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_CheckedOut(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity,
   ));
 }
 
