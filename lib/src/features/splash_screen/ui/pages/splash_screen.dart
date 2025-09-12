@@ -1,4 +1,5 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/di/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
 import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
@@ -24,11 +25,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late final SplashCubit _splashCubit;
+  late final UserContainer _userContainer;
 
   @override
   void initState() {
     super.initState();
     _splashCubit = getIt<SplashCubit>();
+    _userContainer = getIt<UserContainer>();
     _splashCubit.checkLoginStatus();
   }
 
@@ -64,7 +67,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _splashStateListener(BuildContext context, SplashState state) {
     state.maybeWhen(
-      loggedIn: () {
+      loggedIn: (user) {
+        _userContainer.setUser(user);
         Navigator.of(context).pushReplacement(HomePage.route());
       },
       loggedOut: () {

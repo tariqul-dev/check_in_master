@@ -6,7 +6,8 @@ class SplashState with _$SplashState {
 
   const factory SplashState.inProgress() = _InProgress;
 
-  const factory SplashState.loggedIn() = _LoggedIn;
+  const factory SplashState.loggedIn({required UserEntity userEntity}) =
+      _LoggedIn;
 
   const factory SplashState.loggedOut() = _LoggedOut;
 
@@ -14,5 +15,6 @@ class SplashState with _$SplashState {
 
   const factory SplashState.locationDenied() = _LocationDenied;
 
-  const factory SplashState.locationServiceDisabled() = _LocationServiceDisabled;
+  const factory SplashState.locationServiceDisabled() =
+      _LocationServiceDisabled;
 }

@@ -13,6 +13,7 @@ import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.da
     as _i100;
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart'
     as _i205;
+import 'package:check_in_master/src/core/di/user_container.dart' as _i625;
 import 'package:check_in_master/src/core/usecases/get_active_location_data.dart'
     as _i451;
 import 'package:check_in_master/src/core/usecases/get_current_user.dart'
@@ -32,8 +33,6 @@ import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart'
     as _i526;
 import 'package:check_in_master/src/features/home/data/datasources/local/eligibility_checker.dart'
     as _i483;
-import 'package:check_in_master/src/features/home/data/datasources/local/handle_permission.dart'
-    as _i599;
 import 'package:check_in_master/src/features/home/data/repositories/home_repository_impl.dart'
     as _i980;
 import 'package:check_in_master/src/features/home/domain/repositories/home_repository.dart'
@@ -44,8 +43,6 @@ import 'package:check_in_master/src/features/home/domain/usecases/do_check_in.da
     as _i261;
 import 'package:check_in_master/src/features/home/domain/usecases/do_check_out.dart'
     as _i939;
-import 'package:check_in_master/src/features/home/domain/usecases/get_permission_status.dart'
-    as _i468;
 import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart'
     as _i1016;
 import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart'
@@ -86,11 +83,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i645.Location>(() => registerModule.location);
+    gh.lazySingleton<_i625.UserContainer>(() => _i625.UserContainer());
     gh.factory<_i483.EligibilityChecker>(
       () => _i483.EligibilityChecker(location: gh<_i645.Location>()),
-    );
-    gh.factory<_i599.HandlePermission>(
-      () => _i599.HandlePermission(location: gh<_i645.Location>()),
     );
     gh.factory<_i236.LocationRemoteDataSource>(
       () => _i236.LocationRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
@@ -156,7 +151,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i677.HomeRepository>(
       () => _i980.HomeRepositoryImpl(
-        handlePermission: gh<_i599.HandlePermission>(),
         eligibilityChecker: gh<_i483.EligibilityChecker>(),
       ),
     );
@@ -165,9 +159,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i261.DoCheckIn>(
       () => _i261.DoCheckIn(repository: gh<_i677.HomeRepository>()),
-    );
-    gh.factory<_i468.GetPermissionStatus>(
-      () => _i468.GetPermissionStatus(repository: gh<_i677.HomeRepository>()),
     );
     gh.factory<_i939.DoCheckOut>(
       () => _i939.DoCheckOut(repository: gh<_i677.HomeRepository>()),
@@ -192,11 +183,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i175.LocationFetchingCubit(gh<_i820.GetLocations>()),
     );
     gh.factory<_i1062.HomeCubit>(
-      () => _i1062.HomeCubit(
-        gh<_i261.DoCheckIn>(),
-        gh<_i939.DoCheckOut>(),
-        gh<_i468.GetPermissionStatus>(),
-      ),
+      () => _i1062.HomeCubit(gh<_i261.DoCheckIn>(), gh<_i939.DoCheckOut>()),
     );
     return this;
   }

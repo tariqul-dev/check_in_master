@@ -1,9 +1,9 @@
+import 'package:check_in_master/src/core/entities/user_entity.dart';
 import 'package:check_in_master/src/core/usecases/typedefs.dart';
 import 'package:check_in_master/src/core/usecases/usecase.dart';
 import 'package:injectable/injectable.dart';
 
 import '../entities/login_input_entity.dart';
-import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
 @Injectable()

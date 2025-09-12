@@ -137,12 +137,12 @@ return locationServiceDisabled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function()?  loggedIn,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function()?  locationDenied,TResult Function()?  locationServiceDisabled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function( UserEntity userEntity)?  loggedIn,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function()?  locationDenied,TResult Function()?  locationServiceDisabled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _LoggedIn() when loggedIn != null:
-return loggedIn();case _LoggedOut() when loggedOut != null:
+return loggedIn(_that.userEntity);case _LoggedOut() when loggedOut != null:
 return loggedOut();case _Failure() when failure != null:
 return failure(_that.message);case _LocationDenied() when locationDenied != null:
 return locationDenied();case _LocationServiceDisabled() when locationServiceDisabled != null:
@@ -164,12 +164,12 @@ return locationServiceDisabled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function()  loggedIn,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function()  locationDenied,required TResult Function()  locationServiceDisabled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function( UserEntity userEntity)  loggedIn,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function()  locationDenied,required TResult Function()  locationServiceDisabled,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _InProgress():
 return inProgress();case _LoggedIn():
-return loggedIn();case _LoggedOut():
+return loggedIn(_that.userEntity);case _LoggedOut():
 return loggedOut();case _Failure():
 return failure(_that.message);case _LocationDenied():
 return locationDenied();case _LocationServiceDisabled():
@@ -190,12 +190,12 @@ return locationServiceDisabled();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function()?  loggedIn,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function()?  locationDenied,TResult? Function()?  locationServiceDisabled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function( UserEntity userEntity)?  loggedIn,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function()?  locationDenied,TResult? Function()?  locationServiceDisabled,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _LoggedIn() when loggedIn != null:
-return loggedIn();case _LoggedOut() when loggedOut != null:
+return loggedIn(_that.userEntity);case _LoggedOut() when loggedOut != null:
 return loggedOut();case _Failure() when failure != null:
 return failure(_that.message);case _LocationDenied() when locationDenied != null:
 return locationDenied();case _LocationServiceDisabled() when locationServiceDisabled != null:
@@ -275,33 +275,67 @@ String toString() {
 
 
 class _LoggedIn implements SplashState {
-  const _LoggedIn();
+  const _LoggedIn({required this.userEntity});
   
 
+ final  UserEntity userEntity;
 
-
+/// Create a copy of SplashState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoggedInCopyWith<_LoggedIn> get copyWith => __$LoggedInCopyWithImpl<_LoggedIn>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoggedIn);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoggedIn&&(identical(other.userEntity, userEntity) || other.userEntity == userEntity));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,userEntity);
 
 @override
 String toString() {
-  return 'SplashState.loggedIn()';
+  return 'SplashState.loggedIn(userEntity: $userEntity)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$LoggedInCopyWith<$Res> implements $SplashStateCopyWith<$Res> {
+  factory _$LoggedInCopyWith(_LoggedIn value, $Res Function(_LoggedIn) _then) = __$LoggedInCopyWithImpl;
+@useResult
+$Res call({
+ UserEntity userEntity
+});
 
 
+
+
+}
+/// @nodoc
+class __$LoggedInCopyWithImpl<$Res>
+    implements _$LoggedInCopyWith<$Res> {
+  __$LoggedInCopyWithImpl(this._self, this._then);
+
+  final _LoggedIn _self;
+  final $Res Function(_LoggedIn) _then;
+
+/// Create a copy of SplashState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userEntity = null,}) {
+  return _then(_LoggedIn(
+userEntity: null == userEntity ? _self.userEntity : userEntity // ignore: cast_nullable_to_non_nullable
+as UserEntity,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

@@ -7,7 +7,9 @@ class AuthState with _$AuthState {
   const factory AuthState.inProgress() = _InProgress;
 
   const factory AuthState.loggedOut() = _LoggedOut;
-  const factory AuthState.loggedIn({required UserEntity userEntity}) = _LoggedIn;
+
+  const factory AuthState.loggedIn({required UserEntity userEntity}) =
+      _LoggedIn;
 
   const factory AuthState.failure({required String message}) = _Failure;
 

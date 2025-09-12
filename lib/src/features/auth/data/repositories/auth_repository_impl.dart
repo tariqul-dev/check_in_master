@@ -1,3 +1,4 @@
+import 'package:check_in_master/src/core/entities/user_entity.dart';
 import 'package:check_in_master/src/core/errors/exceptions/exceptions.dart';
 import 'package:check_in_master/src/core/errors/failures/failures.dart';
 import 'package:check_in_master/src/core/usecases/typedefs.dart';
@@ -6,7 +7,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/login_input_entity.dart';
 import '../../domain/entities/register_input_entity.dart';
-import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/remote_datasource/auth_remote_datasource.dart';
 import '../models/login_input_model.dart';

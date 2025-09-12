@@ -1,12 +1,15 @@
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/di/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
-import 'package:check_in_master/src/features/home/domain/entities/permission_entity.dart';
-import 'package:check_in_master/src/features/home/ui/cubits/check_in_out/check_in_out_cubit.dart';
-import 'package:check_in_master/src/features/home/ui/cubits/home_cubit.dart';
+import 'package:check_in_master/src/core/entities/user_entity.dart';
+import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
 import 'package:check_in_master/src/features/location_management/ui/pages/location_management_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../cubits/check_in_out/check_in_out_cubit.dart';
+import '../cubits/home_cubit.dart';
 
 class HomePage extends StatefulWidget {
   static const path = '/HomePage';
@@ -29,12 +32,15 @@ class _HomePageState extends State<HomePage> {
   late final CheckInOutCubit _checkInOutCubit;
   late final LoadingHudCubit _loadingCubit;
 
+  late final UserContainer _userContainer;
+
   @override
   void initState() {
     super.initState();
 
     _homeCubit = getIt<HomeCubit>();
     _checkInOutCubit = getIt<CheckInOutCubit>();
+    _userContainer = getIt<UserContainer>();
     _loadingCubit = LoadingHudCubit();
   }
 
@@ -43,7 +49,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Check In Master')),
+      appBar: AppBar(title: const Text('Check In Master')),
+      drawer: _buildDrawer(context),
       body: _buildBody(),
     );
   }
@@ -56,20 +63,8 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildCenter(),
-            SizedBox(height: 10),
-            FilledButton(
-              onPressed: () {
-                _homeCubit.checkPermission();
-              },
-              child: Text('Check Permission'),
-            ),
-            SizedBox(height: 20),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(LocationManagementPage.route());
-              },
-              child: Text('Set office location'),
-            ),
+            const SizedBox(height: 20),
+            _buildCheckInButton(),
           ],
         ),
       ),
@@ -81,17 +76,9 @@ class _HomePageState extends State<HomePage> {
       bloc: _homeCubit,
       builder: (context, state) {
         return state.maybeMap(
-          loading: (loadingState) => CircularProgressIndicator(),
-          failure: (failureState) => Text('Error: ${failureState.message}'),
-          hasLocationPermission: (hasLocationPermissionState) {
-            final Status permissionStatus =
-                hasLocationPermissionState.permissionStatus;
-            if (permissionStatus == Status.granted) {
-              return _buildCheckInButton();
-            }
-            return Text('Location permission is missing');
-          },
-          orElse: () => Text('Welcome'),
+          loading: (_) => const CircularProgressIndicator(),
+          failure: (s) => Text('Error: ${s.message}'),
+          orElse: () => const Text('Welcome'),
         );
       },
     );
@@ -111,9 +98,9 @@ class _HomePageState extends State<HomePage> {
             _checkInOutCubit.checkIn();
           },
           child: state.maybeMap(
-            checkedIn: (s) => Text('Check-Out'),
-            checkedOut: (s) => Text('Check-In'),
-            orElse: () => Text('Tap to check in'),
+            checkedIn: (_) => const Text('Check-Out'),
+            checkedOut: (_) => const Text('Check-In'),
+            orElse: () => const Text('Tap to check in'),
           ),
         );
       },
@@ -136,7 +123,7 @@ class _HomePageState extends State<HomePage> {
           message: s.message,
         );
       },
-      checkedIn: (s) {
+      checkedIn: (_) {
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
         isCheckedIn = true;
@@ -146,6 +133,60 @@ class _HomePageState extends State<HomePage> {
         DialogUtils.hideDialog(context);
         isCheckedIn = false;
       },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    final UserEntity user = _userContainer.currentUser;
+    return SafeArea(
+      child: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(user.name),
+              accountEmail: Text(user.email),
+              currentAccountPicture: const CircleAvatar(
+                child: Icon(Icons.person, size: 40),
+              ),
+              decoration: const BoxDecoration(color: Colors.blue),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.location_on),
+                    title: const Text("Set Office Location"),
+                    onTap: () {
+                      Navigator.of(
+                        context,
+                      ).push(LocationManagementPage.route());
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.people),
+                    title: const Text("Show Checked-in Users"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // TODO: Navigate to checked-in users page
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text("Logout"),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: clear session / Firebase signOut
+                Navigator.of(context).pushReplacement(AuthPage.route());
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
