@@ -36,6 +36,7 @@ class LocationOperationCubit extends Cubit<LocationOperationState> {
       name: locationName,
       active: true,
       createdAt: DateTime.now().millisecondsSinceEpoch,
+      checkedInUserIds: [],
     );
     final result = await _saveLocationData(
       LocationInputEntity(

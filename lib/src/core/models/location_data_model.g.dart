@@ -8,12 +8,15 @@ part of 'location_data_model.dart';
 
 LocationDataModel _$LocationDataModelFromJson(Map<String, dynamic> json) =>
     LocationDataModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       name: json['name'] as String,
       active: json['active'] as bool,
       createdAt: (json['createdAt'] as num).toInt(),
+      checkedInUserIds: (json['checkedInUserIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$LocationDataModelToJson(LocationDataModel instance) =>
@@ -23,4 +26,5 @@ Map<String, dynamic> _$LocationDataModelToJson(LocationDataModel instance) =>
       'name': instance.name,
       'active': instance.active,
       'createdAt': instance.createdAt,
+      'checkedInUserIds': instance.checkedInUserIds,
     };

@@ -13,6 +13,8 @@ class UserContainer {
         email: '',
         checkInDateTime: null,
         checkOutDateTime: null,
+        id: '',
+        isCheckedIn: false,
       );
 
   void setUser(UserEntity user) {

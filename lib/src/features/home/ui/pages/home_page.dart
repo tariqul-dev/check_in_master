@@ -158,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                     leading: const Icon(Icons.location_on),
                     title: const Text("Set Office Location"),
                     onTap: () {
+                      Navigator.of(context).pop();
                       Navigator.of(
                         context,
                       ).push(LocationManagementPage.route());

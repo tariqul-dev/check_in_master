@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/di/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart';
 import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
@@ -40,12 +41,14 @@ class _AuthPageState extends State<AuthPage>
 
   late final AuthCubit _authCubit;
   late final StreamSubscription<AuthState> _authStateStreamSubscription;
+  late final UserContainer _userContainer;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _authCubit = getIt<AuthCubit>();
+    _userContainer = getIt<UserContainer>();
     _authStateStreamSubscription = _authCubit.stream.listen(
       _authStateStreamSubscriptionListener,
     );
@@ -60,6 +63,7 @@ class _AuthPageState extends State<AuthPage>
     _registerEmailController.dispose();
     _registerPasswordController.dispose();
     _authCubit.close();
+    _authStateStreamSubscription.cancel();
     super.dispose();
   }
 
@@ -196,7 +200,8 @@ class _AuthPageState extends State<AuthPage>
           message: message,
         );
       },
-      success: (userEntity) {
+      success: (user) {
+        _userContainer.setUser(user);
         DialogUtils.hideDialog(context);
         Navigator.of(
           context,

@@ -80,10 +80,10 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i100.LoadingHudCubit>(() => _i100.LoadingHudCubit());
+    gh.lazySingleton<_i625.UserContainer>(() => _i625.UserContainer());
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i645.Location>(() => registerModule.location);
-    gh.lazySingleton<_i625.UserContainer>(() => _i625.UserContainer());
     gh.factory<_i483.EligibilityChecker>(
       () => _i483.EligibilityChecker(location: gh<_i645.Location>()),
     );

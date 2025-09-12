@@ -47,7 +47,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
       throw CreatingLocationException("Failed to save location");
     }
 
-    return LocationDataModel.fromFirestore(docRef.id, data);
+    return LocationDataModel.fromFirestore(data, docRef.id);
   }
 
   @override
@@ -74,7 +74,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
     if (querySnapshot.docs.isNotEmpty) {
       final doc = querySnapshot.docs.first;
-      return LocationDataModel.fromFirestore(doc.id, doc.data());
+      return LocationDataModel.fromFirestore(doc.data(), doc.id);
     } else {
       throw NoDataFoundException('No data found');
     }
@@ -86,7 +86,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
     if (querySnapshot.docs.isNotEmpty) {
       final locationList = querySnapshot.docs
-          .map((doc) => LocationDataModel.fromFirestore(doc.id, doc.data()))
+          .map((doc) => LocationDataModel.fromFirestore(doc.data(), doc.id))
           .toList();
       return locationList;
     } else {

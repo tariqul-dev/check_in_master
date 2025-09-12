@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/models/user_model.dart';
 import '../../models/login_input_model.dart';
 import '../../models/register_input_model.dart';
-import '../../../../../core/models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> register(RegisterInputModel input);
@@ -38,6 +38,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         email: input.email,
         checkInDateTime: null,
         checkOutDateTime: null,
+        id: '',
+        isCheckedIn: false,
       );
 
       await firestore.collection('users').doc(uid).set(userModel.toJson());
@@ -77,7 +79,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final doc = await firestore.collection('users').doc(firebaseUser.uid).get();
     if (!doc.exists) return null;
 
-    return UserModel.fromJson(doc.data()!);
+    return UserModel.fromFirestore(doc.data()!, doc.id);
   }
 
   @override
