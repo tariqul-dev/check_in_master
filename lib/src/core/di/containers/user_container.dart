@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../entities/user_entity.dart';
+import '../../entities/user_entity.dart';
 
 @lazySingleton
 class UserContainer {

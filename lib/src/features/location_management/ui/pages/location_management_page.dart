@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:check_in_master/src/core/bottom_sheets/show_single_input_bottom_sheet.dart';
-import 'package:check_in_master/src/core/constants.dart';
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/di/containers/location_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/location_data_entity.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +38,9 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
   late final StreamSubscription<LocationFetchingState>
   _locationFetchingSubscription;
 
-  final ValueNotifier<LatLng> currentLocation = ValueNotifier(
-    defaultLocationData,
-  );
+  late final LocationContainer _locationContainer;
+
+  late final ValueNotifier<LatLng> currentLocation;
 
   GoogleMapController? _mapController;
   LocationDataEntity? _currentActiveLocation;
@@ -62,6 +62,14 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
     );
 
     _locationOperationCubit.getLocationData();
+    _locationContainer = getIt<LocationContainer>();
+
+    currentLocation = ValueNotifier(
+      LatLng(
+        _locationContainer.currentActiveLocation.lat,
+        _locationContainer.currentActiveLocation.lng,
+      ),
+    );
   }
 
   @override
@@ -162,6 +170,7 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
       },
       fetchLocationData: (s) {
         _currentActiveLocation = s.locationData;
+        _locationContainer.setCurrentActiveLocation(s.locationData);
         final latLng = LatLng(s.locationData.lat, s.locationData.lng);
         _setCurrentLocation(latLng);
         DialogUtils.hideDialog(context);
@@ -169,6 +178,9 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
       },
       saveLocationSuccess: (saveLocationSuccessState) {
         _currentActiveLocation = saveLocationSuccessState.newLocation;
+        _locationContainer.setCurrentActiveLocation(
+          saveLocationSuccessState.newLocation,
+        );
         _loadingCubit.completeLoading();
         DialogUtils.hideDialog(context);
         DialogUtils.showMessageDialog(
@@ -201,6 +213,7 @@ class _LocationManagementPageState extends State<LocationManagementPage> {
     for (var loc in list) {
       if (loc.active == true) {
         _currentActiveLocation = loc;
+        _locationContainer.setCurrentActiveLocation(loc);
       }
       locMap[loc.id] = loc;
     }

@@ -1,6 +1,6 @@
 import 'package:check_in_master/src/core/cubits/loading_hud/loading_hud_cubit.dart';
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
-import 'package:check_in_master/src/core/di/user_container.dart';
+import 'package:check_in_master/src/core/di/containers/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/user_entity.dart';
 import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';

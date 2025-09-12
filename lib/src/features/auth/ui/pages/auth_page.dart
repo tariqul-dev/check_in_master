@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
-import 'package:check_in_master/src/core/di/user_container.dart';
+import 'package:check_in_master/src/core/di/containers/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart';
 import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
