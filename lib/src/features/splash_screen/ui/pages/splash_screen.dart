@@ -1,4 +1,5 @@
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
+import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
 import 'package:check_in_master/src/features/home/ui/pages/home_page.dart';
 import 'package:check_in_master/src/features/splash_screen/ui/cubits/splash_cubit.dart';
@@ -71,6 +72,20 @@ class _SplashScreenState extends State<SplashScreen> {
       },
       failure: (message) {
         Navigator.of(context).pushReplacement(AuthPage.route());
+      },
+      locationDenied: () {
+        DialogUtils.showMessageDialog(
+          context: context,
+          title: 'Warning',
+          message: 'Location permission is required.',
+        );
+      },
+      locationServiceDisabled: () {
+        DialogUtils.showMessageDialog(
+          context: context,
+          title: 'Warning',
+          message: 'Please enable location service.',
+        );
       },
       orElse: () {},
     );

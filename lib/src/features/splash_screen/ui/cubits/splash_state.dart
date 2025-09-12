@@ -11,4 +11,8 @@ class SplashState with _$SplashState {
   const factory SplashState.loggedOut() = _LoggedOut;
 
   const factory SplashState.failure({required String message}) = _Failure;
+
+  const factory SplashState.locationDenied() = _LocationDenied;
+
+  const factory SplashState.locationServiceDisabled() = _LocationServiceDisabled;
 }

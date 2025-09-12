@@ -55,7 +55,7 @@ extension SplashStatePatterns on SplashState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _InProgress value)?  inProgress,TResult Function( _LoggedIn value)?  loggedIn,TResult Function( _LoggedOut value)?  loggedOut,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _InProgress value)?  inProgress,TResult Function( _LoggedIn value)?  loggedIn,TResult Function( _LoggedOut value)?  loggedOut,TResult Function( _Failure value)?  failure,TResult Function( _LocationDenied value)?  locationDenied,TResult Function( _LocationServiceDisabled value)?  locationServiceDisabled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
@@ -63,7 +63,9 @@ return initial(_that);case _InProgress() when inProgress != null:
 return inProgress(_that);case _LoggedIn() when loggedIn != null:
 return loggedIn(_that);case _LoggedOut() when loggedOut != null:
 return loggedOut(_that);case _Failure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case _LocationDenied() when locationDenied != null:
+return locationDenied(_that);case _LocationServiceDisabled() when locationServiceDisabled != null:
+return locationServiceDisabled(_that);case _:
   return orElse();
 
 }
@@ -81,7 +83,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _InProgress value)  inProgress,required TResult Function( _LoggedIn value)  loggedIn,required TResult Function( _LoggedOut value)  loggedOut,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _InProgress value)  inProgress,required TResult Function( _LoggedIn value)  loggedIn,required TResult Function( _LoggedOut value)  loggedOut,required TResult Function( _Failure value)  failure,required TResult Function( _LocationDenied value)  locationDenied,required TResult Function( _LocationServiceDisabled value)  locationServiceDisabled,}){
 final _that = this;
 switch (_that) {
 case _Initial():
@@ -89,7 +91,9 @@ return initial(_that);case _InProgress():
 return inProgress(_that);case _LoggedIn():
 return loggedIn(_that);case _LoggedOut():
 return loggedOut(_that);case _Failure():
-return failure(_that);case _:
+return failure(_that);case _LocationDenied():
+return locationDenied(_that);case _LocationServiceDisabled():
+return locationServiceDisabled(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -106,7 +110,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _InProgress value)?  inProgress,TResult? Function( _LoggedIn value)?  loggedIn,TResult? Function( _LoggedOut value)?  loggedOut,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _InProgress value)?  inProgress,TResult? Function( _LoggedIn value)?  loggedIn,TResult? Function( _LoggedOut value)?  loggedOut,TResult? Function( _Failure value)?  failure,TResult? Function( _LocationDenied value)?  locationDenied,TResult? Function( _LocationServiceDisabled value)?  locationServiceDisabled,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
@@ -114,7 +118,9 @@ return initial(_that);case _InProgress() when inProgress != null:
 return inProgress(_that);case _LoggedIn() when loggedIn != null:
 return loggedIn(_that);case _LoggedOut() when loggedOut != null:
 return loggedOut(_that);case _Failure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case _LocationDenied() when locationDenied != null:
+return locationDenied(_that);case _LocationServiceDisabled() when locationServiceDisabled != null:
+return locationServiceDisabled(_that);case _:
   return null;
 
 }
@@ -131,14 +137,16 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function()?  loggedIn,TResult Function()?  loggedOut,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  inProgress,TResult Function()?  loggedIn,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function()?  locationDenied,TResult Function()?  locationServiceDisabled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _LoggedIn() when loggedIn != null:
 return loggedIn();case _LoggedOut() when loggedOut != null:
 return loggedOut();case _Failure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case _LocationDenied() when locationDenied != null:
+return locationDenied();case _LocationServiceDisabled() when locationServiceDisabled != null:
+return locationServiceDisabled();case _:
   return orElse();
 
 }
@@ -156,14 +164,16 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function()  loggedIn,required TResult Function()  loggedOut,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  inProgress,required TResult Function()  loggedIn,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function()  locationDenied,required TResult Function()  locationServiceDisabled,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _InProgress():
 return inProgress();case _LoggedIn():
 return loggedIn();case _LoggedOut():
 return loggedOut();case _Failure():
-return failure(_that.message);case _:
+return failure(_that.message);case _LocationDenied():
+return locationDenied();case _LocationServiceDisabled():
+return locationServiceDisabled();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +190,16 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function()?  loggedIn,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  inProgress,TResult? Function()?  loggedIn,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function()?  locationDenied,TResult? Function()?  locationServiceDisabled,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _InProgress() when inProgress != null:
 return inProgress();case _LoggedIn() when loggedIn != null:
 return loggedIn();case _LoggedOut() when loggedOut != null:
 return loggedOut();case _Failure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case _LocationDenied() when locationDenied != null:
+return locationDenied();case _LocationServiceDisabled() when locationServiceDisabled != null:
+return locationServiceDisabled();case _:
   return null;
 
 }
@@ -388,5 +400,69 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class _LocationDenied implements SplashState {
+  const _LocationDenied();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocationDenied);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SplashState.locationDenied()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LocationServiceDisabled implements SplashState {
+  const _LocationServiceDisabled();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocationServiceDisabled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SplashState.locationServiceDisabled()';
+}
+
+
+}
+
+
+
 
 // dart format on
