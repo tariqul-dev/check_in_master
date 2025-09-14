@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:check_in_master/src/core/di/app_dependencies_builder.dart';
 import 'package:check_in_master/src/core/di/containers/location_container.dart';
 import 'package:check_in_master/src/core/di/containers/user_container.dart';
 import 'package:check_in_master/src/core/dialogs/dialog_utils.dart';
 import 'package:check_in_master/src/core/entities/user_entity.dart';
+import 'package:check_in_master/src/features/auth/ui/cubits/auth_cubit.dart';
 import 'package:check_in_master/src/features/auth/ui/pages/auth_page.dart';
 import 'package:check_in_master/src/features/location_management/ui/pages/location_management_page.dart';
 import 'package:flutter/material.dart';
@@ -28,19 +31,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeCubit _homeCubit;
+  late final AuthCubit _authCubit;
 
   late final UserContainer _userContainer;
   late final LocationContainer _locationContainer;
+
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
   @override
   void initState() {
     super.initState();
 
     _homeCubit = getIt<HomeCubit>();
+    _authCubit = getIt<AuthCubit>();
+
     _userContainer = getIt<UserContainer>();
     _locationContainer = getIt<LocationContainer>();
 
     _homeCubit.getCheckInStatus(user: _userContainer.currentUser);
+
+    _authStateSubscription = _authCubit.stream.listen(
+      _authStateSubscriptionListener,
+    );
   }
 
   @override
@@ -161,7 +173,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text("Logout"),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: clear session / Firebase signOut
+                _authCubit.logout();
                 Navigator.of(context).pushReplacement(AuthPage.route());
               },
             ),
@@ -193,6 +205,26 @@ class _HomePageState extends State<HomePage> {
         DialogUtils.hideDialog(context);
       },
       orElse: () {},
+    );
+  }
+
+  void _authStateSubscriptionListener(AuthState state) {
+    state.maybeMap(
+      inProgress: (_) {
+        DialogUtils.showLoadingDialog(context: context);
+      },
+      loggedOut: (_) {
+        DialogUtils.hideDialog(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          AuthPage.route(),
+          (route) => false,
+        );
+      },
+
+      orElse: () {
+        DialogUtils.hideDialog(context);
+      },
     );
   }
 }
