@@ -56,6 +56,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _authCubit.close();
+    _homeCubit.close();
+
+    _authStateSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Check In Master')),
